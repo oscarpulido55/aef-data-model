@@ -1,10 +1,10 @@
 # Analytics Engineering Framework - Data Model
 [Analytics engineers](https://www.getdbt.com/what-is-analytics-engineering) transform, test, deploy, and document data using software engineering principles, providing clean datasets that empower end users to independently answer their own questions.
 
-This repository is a key component of a robust analytics environment, establishing a well-structured system to manage your data models, schemas, Dataplex lakes and zones, and data definition language (DDL) statements. It leverages Dataform to seamlessly integrate these elements, supporting lakehouse, data lake, and data mesh architectures.
+This opininated Data Model management repository is a key component of a robust analytics environment, establishing a well-structured system to manage your data models, schemas, Dataplex lakes and zones, and data definition language (DDL) statements. It leverages Dataform to seamlessly integrate these elements, supporting lakehouse, data lake, and data mesh architectures.
 
 ### Key Features & Concepts
-This repository is your central hub for streamlined data management, governance, and collaboration.  Here's what it offers:
+This repository is your central hub for streamlined data model definition, governance, and collaboration.  Here's what it offers:
 
 - **Data Modeling and Schema Management:** Create and maintain robust data models and schemas to ensure data integrity and consistency across your pipelines.
 - **Dataplex Integration:** Seamlessly organize and govern your data lake and warehouse environments using Google Cloud Dataplex's powerful features:
@@ -26,9 +26,9 @@ This repository is your central hub for streamlined data management, governance,
     - Creates BigQuery datasets for the data layers: landing, curated, and exposure.
     - Generates a `../dataform/dataform.json` file that provides parameters to reference the Terraform-created infrastructure during Dataform operations.
   - `gcs.tf`:
-    - Creates data landing GCS buckets.
+    - Creates data landing GCS buckets. And uploads sample data.
   - `fake_on_prem_db.tf`:
-    - Creates a dummy PostgreSQL database to simulate an on-premises data source that can't be accessed using BigQuery Omni or BigLake.
+    - Creates a dummy PostgreSQL database to simulate an on-premises data source that can't be accessed using BigQuery Omni or BigLake. And inserts sample data.
 
 ```
 └── terraform
@@ -100,7 +100,7 @@ terraform plan -var="landing_data_project_id=your_landing_project_id" \
 
 ## Integration with Analytics Engineering Framework
 
-This Orchestration Framework is designed as a component of a comprehensive Analytics Engineering Framework comprised of:
+This opininated Data Model management repository is designed as a component of a comprehensive Analytics Engineering Framework comprised of:
 
 1. Analytics Engineering Framework - Data Orchestration: Automates the generation of Google Cloud Workflows Definition files.
 1. Analytics Engineering Framework - Orchestration Framework: Seamlessly deploy your orchestration infrastructure.
