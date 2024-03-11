@@ -1,0 +1,5 @@
+CREATE  TABLE `${exposure_project_id}.${exposure_dataset_id}.dim_location`
+    (
+    location_id INTEGER,
+    location_name STRING
+    );

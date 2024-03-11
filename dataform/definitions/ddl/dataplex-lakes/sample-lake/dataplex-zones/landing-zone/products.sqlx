@@ -1,0 +1,12 @@
+CREATE EXTERNAL TABLE `${landing_project_id}.${landing_dataset_id}.product`
+(
+    product_id STRING,
+    product_name STRING
+)
+WITH CONNECTION `${connection_name}`
+OPTIONS(
+    uris = ['gs://${landing_storage_bucket}/product/*'],
+    max_staleness = INTERVAL 8 HOUR,
+    metadata_cache_mode = 'AUTOMATIC',
+    format = 'CSV'
+);
