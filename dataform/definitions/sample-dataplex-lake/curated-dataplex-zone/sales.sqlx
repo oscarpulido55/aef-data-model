@@ -1,0 +1,18 @@
+config {
+    type: "table",
+    description: "A table for storing locations",
+    columns: {
+        product_id: "Product ID as defined in the source system.",
+        sales_value: "The sales value.",
+        sales_cost: "The sales cost."
+    }
+}
+
+CREATE TABLE
+  `${dataform.projectConfig.vars.curated_dataset_project_id}.${dataform.projectConfig.vars.curated_dataset_dataset_id}.sales` ( location_id INTEGER,
+    product_id INTEGER,
+    sales_value INTEGER,
+    sales_cost INTEGER,
+    sales_dt DATE )
+PARTITION BY
+  sales_dt OPTIONS (require_partition_filter = TRUE);

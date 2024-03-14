@@ -25,16 +25,16 @@ This repository is your central hub for streamlined data model definition, gover
     - Creates a BigLake connection for GCS files. 
     - Creates BigQuery datasets for the data layers: landing, curated, and exposure.
     - Generates a `../dataform/dataform.json` file that provides parameters to reference the Terraform-created infrastructure during Dataform operations.
-  - `gcs.tf`:
-    - Creates data landing GCS buckets. And uploads sample data.
-  - `fake_on_prem_db.tf`:
-    - Creates a dummy PostgreSQL database to simulate an on-premises data source that can't be accessed using BigQuery Omni or BigLake. And inserts sample data.
-
+  - `prod.tfvars`:
+    - Set your base project, for the core resources.
+    - Define your datasets.
 ```
 └── terraform
-│   ├── main.tf
-│   ├── gcs.tf
-│   └── fake_on_prem_db.tf
+│   ├── prod.tfvars
+│   ├── locals.tf
+│   ├── variables.tf
+│   ├── output.tf
+│   └── main.tf
 ```
 - **dataform:**
   - Houses your table definitions using a structure recommended for Dataform repositories.
@@ -43,19 +43,9 @@ This repository is your central hub for streamlined data model definition, gover
 ```
 ├── dataform
 │   └── definitions
-│   │   └── ddl
-│   │       └── dataplex-lakes
-│   │           └── sample-lake
-│   │           │   └── dataplex-zones
-│   │           │       ├── landing-zone
-│   │           │       │      ├── table.sqlx
-│   │           │       │      └── ...
-│   │           │       ├── curated-zone
-│   │           │       └── exposure-zone
-│   │           └── sample-lake2
-│   │               └── dataplex-zones
-│   │                  ├── sample-zone
-│   │                  └── ...
+│   │    └── sample-dataplex-lake
+│   │        ├── sample-dataplex-zone
+│   │        └── ...
 │   └── dataform.json (auto generated when running terraform apply)
 
 ```
@@ -67,6 +57,46 @@ This repository is your central hub for streamlined data model definition, gover
 │   ├── lakes.yaml
 │   └── zones.yaml
 ```
+
+### Usage
+#### Steps
+1. **Terraform:** Modify the Terraform `prod.tfvars` setting your base project details and defining the datasets that will be created.
+1. **Dataform:** Add your table definitions to the dataform folder.
+1. **Dataplex:** Define tagging and governance rules in the dataplex folder.
+1. Run the Terraformn Plan / Apply
+```commandline
+terraform plan -var-file="prod.tfvars"
+```
+
+## Integration with Analytics Engineering Framework
+
+This opininated Data Model management repository is designed as a component of a comprehensive Analytics Engineering Framework comprised of:
+
+1. Analytics Engineering Framework - Data Orchestration: Automates the generation of Google Cloud Workflows Definition files.
+1. Analytics Engineering Framework - Orchestration Framework: Seamlessly deploy your orchestration infrastructure.
+1. Analytics Engineering Framework - Data Transformation: Houses your data transformation logic.
+1. Analytics Engineering Framework - Data Model: Manages data models, schemas and Dataplex lakes and zones.
+
+## Demo Mode Apendix
+In case you want to create some sample data sources (GCS bucket with some files, and a Cloud SQL Postgres DB with 1 populated table) run the terraform in `DEMO` mode by following the next steps:
+
+### Folder Structure
+- **terraform**:
+  - `gcs.tf`:
+    - Creates data landing GCS buckets. And uploads sample data.
+  - `fake_on_prem_db.tf`:
+    - Creates a dummy PostgreSQL database to simulate an on-premises data source that can't be accessed using BigQuery Omni or BigLake. And inserts sample data.
+  - `demo.tfvars`:
+    - Set your base project, for the core resources.
+    - Define your datasets.
+```
+└── terraform
+│   ├── ...
+│   ├── demo.tfvars
+│   ├── gcs.tf
+│   └── fake_on_prem_db.tf
+```
+
 - **sample-data:**
   - Contains sample data to be inserted into the dummy on-premises database.
   - Contains sample files to be located in the landing GCS bucket and accessed with BigQuery BigLake.
@@ -84,25 +114,10 @@ This repository is your central hub for streamlined data model definition, gover
 **Important:** Using this repository involves creating tables and managing data. We've included simple data and tables for demonstration.
 
 #### Steps
+1. **Terraform:** Modify the Terraform `demo.tfvars` setting your base project details, the datasets that will be created and the sample files and the sample bucket to be created.
 1. **Dataform:** Add your table definitions to the dataform folder.
 1. **Dataplex:** Define tagging and governance rules in the dataplex folder.
-1. **Terraform:** Modify the Terraform section to customize your infrastructure to your specific needs.
-   - To run demo mode:
-      - **Modify Variable Values:*** Navigate to the terraform folder. Update the Terraform variables (`landing_data_project_id`, `curated_data_project_id`, `exposure_data_project_id`, `region`) to match your project IDs and desired region.
-      - **Execute Terraform:** Open a terminal in the terraform folder and run the terrafrom plan and apply:
+1. Run the Terraformn Plan / Apply
 ```commandline
-terraform plan -var="landing_data_project_id=your_landing_project_id" \
-                -var="curated_data_project_id=your_curated_project_id" \
-                -var="exposure_data_project_id=your_exposure_project_id" \
-                -var="region=your_region" 
+terraform plan -var-file="demo.tfvars"
 ```
-
-
-## Integration with Analytics Engineering Framework
-
-This opininated Data Model management repository is designed as a component of a comprehensive Analytics Engineering Framework comprised of:
-
-1. Analytics Engineering Framework - Data Orchestration: Automates the generation of Google Cloud Workflows Definition files.
-1. Analytics Engineering Framework - Orchestration Framework: Seamlessly deploy your orchestration infrastructure.
-1. Analytics Engineering Framework - Data Transformation: Houses your data transformation logic.
-1. Analytics Engineering Framework - Data Model: Manages data models, schemas and Dataplex lakes and zones.

@@ -1,5 +1,0 @@
-CREATE TABLE `${curated_project_id}.${curated_dataset_id}.product`
-(
-product_id INTEGER,
-product_name STRING
-);

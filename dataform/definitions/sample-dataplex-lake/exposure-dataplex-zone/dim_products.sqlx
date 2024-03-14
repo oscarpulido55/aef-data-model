@@ -1,0 +1,12 @@
+config {
+    type: "table",
+    description: "A table for storing products",
+    columns: {
+        product_id: "Product ID as defined in the source system.",
+        product_name: "The product name as defined in the source system."
+    }
+}
+
+CREATE TABLE
+  `${dataform.projectConfig.vars.exposure_dataset_project_id}.${dataform.projectConfig.vars.exposure_dataset_dataset_id}.dim_product` ( product_id INTEGER,
+    product_name STRING )

@@ -1,0 +1,23 @@
+config {
+    type: "table",
+    description: "A table for storing sales",
+    columns: {
+        product_id: "Product ID as defined in the source system.",
+        sales_value: "The sales value.",
+        sales_cost:"The sales cost."
+    }
+}
+
+CREATE EXTERNAL TABLE
+  `${dataform.projectConfig.vars.landing_dataset_project_id}.${dataform.projectConfig.vars.landing_dataset_dataset_id}.sales` ( location_id STRING,
+    product_id STRING,
+    sales_value INTEGER,
+    sales_cost INTEGER,
+    )
+WITH PARTITION COLUMNS ( sates_dt STRING,
+    )
+WITH CONNECTION `${dataform.projectConfig.vars.connection_name}` OPTIONS( hive_partition_uri_prefix = "gs://${dataform.projectConfig.vars.sample_data_bucket}/sales",
+    uris = ['gs://${dataform.projectConfig.vars.landing_storage_bucket}/sales/*'],
+    max_staleness = INTERVAL 8 HOUR,
+    metadata_cache_mode = 'AUTOMATIC',
+    format = 'CSV' )

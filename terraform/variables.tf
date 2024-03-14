@@ -14,52 +14,55 @@
  * limitations under the License.
  */
 
-variable "landing_data_project_id" {
-  type        = string
-  nullable    = false
-}
-
-variable "curated_data_project_id" {
-  type        = string
-  nullable    = false
-}
-
-variable "exposure_data_project_id" {
+variable "project" {
+  description = "Project where the core BigLake bigquery_connection will be created."
   type        = string
   nullable    = false
 }
 
 variable "region" {
+  description = "Region where the core BigLake bigquery_connection and will be created."
   type        = string
   nullable    = false
 }
 
-variable "landing_bq_dataset_name" {
-  type        = string
+variable "datasets" {
   nullable    = false
-  default = "landing_sample_dataset"
+  description = "A map of datasets, each containing a project_id where the dataset will be created."
+  type        = map(object({
+    dataset_id = string
+    project_id = string
+    location   = string
+  }))
 }
 
-variable "curated_bq_dataset_name" {
+
+#From here variables are optional and util for demo purposes only
+variable "create_demo_data" {
+  description = "Variable that will define if demo BD will be created and if demo files will be uploaded. "
   type        = string
-  nullable    = false
-  default = "curated_sample_dataset"
+  default     = false
 }
 
-variable "exposure_bq_dataset_name" {
+variable "sample_data_bucket" {
+  nullable    = true
+  default     = null
+  description = "Bucket where sample data will be stored."
   type        = string
-  nullable    = false
-  default = "exposure_sample_dataset"
 }
 
-variable "sample_start_date" {
-  type        = string
-  nullable    = false
-  default = "2024-02-26"
+variable "sample_files" {
+  nullable = true
+  default  = null
+  type     = map(object({
+    name   = string
+    source = string
+  }))
+  description = "A map where values are objects containing 'source' (path to the file) and optional 'content'."
 }
 
-variable "sample_end_date" {
-  type        = string
-  nullable    = false
-  default = "2024-02-26"
+variable "sample_default_date" {
+  nullable = true
+  default  = null
+  type     = string
 }

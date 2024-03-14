@@ -14,40 +14,21 @@
  * limitations under the License.
  */
 
-# Create storage bucket.
-resource "google_storage_bucket" "sample_landing_data_bucket" {
-  name                     = "${var.landing_data_project_id}-sample-raw-data-bucket"
+# Create sample storage bucket.
+resource "google_storage_bucket" "sample_data_bucket" {
+  count                    = var.create_demo_data ? 1 : 0
+  name                     = "${var.project}-${var.sample_data_bucket}"
   location                 = var.region
-  project                  = var.landing_data_project_id
+  project                  = var.project
   public_access_prevention = "enforced"
   force_destroy            = true
 }
 
 # Copy files to gcs, create partitions
-resource "google_storage_bucket_object" "location" {
-  name       = "locations/location.csv"
-  source     = "../sample-data/gcs_files/location.csv"
-  bucket     = google_storage_bucket.sample_landing_data_bucket.name
-  depends_on = [google_storage_bucket.sample_landing_data_bucket]
-}
-
-resource "google_storage_bucket_object" "product" {
-  name       = "products/product.csv"
-  source     = "../sample-data/gcs_files/product.csv"
-  bucket     = google_storage_bucket.sample_landing_data_bucket.name
-  depends_on = [google_storage_bucket.sample_landing_data_bucket]
-}
-
-resource "google_storage_bucket_object" "sales-dt1" {
-  name       = "sales/2024-03-11/sales_dt1.csv"
-  source     = "../sample-data/gcs_files/sales_dt1.csv"
-  bucket     = google_storage_bucket.sample_landing_data_bucket.name
-  depends_on = [google_storage_bucket.sample_landing_data_bucket]
-}
-
-resource "google_storage_bucket_object" "sales-dt2" {
-  name       = "/sales/2024-03-12/sales_dt2.csv"
-  source     = "../sample-data/gcs_files/sales_dt2.csv"
-  bucket     = google_storage_bucket.sample_landing_data_bucket.name
-  depends_on = [google_storage_bucket.sample_landing_data_bucket]
+resource "google_storage_bucket_object" "objects" {
+  for_each   = var.create_demo_data == true ? {} : (var.sample_files != null ? var.sample_files : {})
+  name       = each.value.name
+  source     = each.value.source
+  bucket     = google_storage_bucket.sample_data_bucket[0].name
+  depends_on = [google_storage_bucket.sample_data_bucket]
 }

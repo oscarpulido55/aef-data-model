@@ -16,60 +16,39 @@
 
 # Creates a cloud resource connection.
 resource "google_bigquery_connection" "connection" {
-  connection_id = "${var.landing_data_project_id}-raw-sample-connection"
-  project       = var.landing_data_project_id
+  connection_id = "${var.project}-sample-connection"
+  project       = var.project
   location      = var.region
   cloud_resource {}
 }
 
-## Grants permissions to the service account of the connection created in the last step.
+# Grants permissions to the service account of the connection created in the last step.
 resource "google_project_iam_member" "connectionPermissionGrant" {
-  project = var.landing_data_project_id
+  project = var.project
   role    = "roles/storage.objectViewer"
   member  = format("serviceAccount:%s", google_bigquery_connection.connection.cloud_resource[0].service_account_id)
 }
 
-#Create landing bigquery dataset
-resource "google_bigquery_dataset" "sample_landing_dataset" {
-   project = var.landing_data_project_id
-   dataset_id = var.landing_bq_dataset_name
-   location   = var.region
-}
-
-#Create curated bigquery dataset
-resource "google_bigquery_dataset" "sample_curated_dataset" {
-   project = var.curated_data_project_id
-   dataset_id = var.curated_bq_dataset_name
-   location   = var.region
-}
-
-#Create exposure bigquery dataset
-resource "google_bigquery_dataset" "sample_exposure_dataset" {
-   project = var.curated_data_project_id
-   dataset_id = var.exposure_bq_dataset_name
-   location   = var.region
+# Create datasets define via terraform variables if any
+resource "google_bigquery_dataset" "datasets" {
+  for_each   = var.datasets
+  dataset_id = each.value.dataset_id
+  project    = each.value.project_id
+  location   = each.value.location
 }
 
 # Create dataform parameters file
 resource "local_file" "dataform_config" {
-  content = <<EOF
+  content  = <<EOF
   {
     "defaultSchema": "dataform",
     "assertionSchema": "dataform_assertions",
-    "warehouse": "bigquery",
-    "defaultDatabase": "${google_bigquery_dataset.sample_landing_dataset.dataset_id}",
     "defaultLocation": "${var.region}",
+    "warehouse": "bigquery",
     "vars": {
-      "landing_project_id": "${var.landing_data_project_id}",
-      "curated_project_id": "${var.landing_data_project_id}",
-      "exposure_project_id": "${var.landing_data_project_id}",
-      "landing_dataset_id": "${google_bigquery_dataset.sample_landing_dataset.dataset_id}",
-      "curated_dataset_id": "${google_bigquery_dataset.sample_curated_dataset.dataset_id}",
-      "exposure_dataset_id": "${google_bigquery_dataset.sample_exposure_dataset.dataset_id}",
-      "landing_storage_bucket": "${google_storage_bucket.sample_landing_data_bucket.name}",
       "connection_name": "${google_bigquery_connection.connection.connection_id}",
-      "start_date": "${var.sample_start_date}",
-      "end_date": "${var.sample_end_date}"
+      ${local.dataset_vars},
+      ${local.demo_dataform_vars_trimmed}
     }
   }
   EOF
