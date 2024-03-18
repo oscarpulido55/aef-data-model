@@ -13,10 +13,12 @@ venv/*
 **/.test.lock
 .idea
 .vscode
+.gitmodules
 .idx/dev.nix
 backend.tf
 backend-config.hcl
 credentials.json
+cortex_config.json
 key.json
 terraform-ls.tf
 bundle.zip
@@ -24,6 +26,8 @@ bundle-*.zip
 cloud-sql-proxy
 .DS_Store
 Demo/*
+data-model/metadata/metadata-deployer/cortex_src_code/*
+data-model-deployer/cortex_src_code/*
 **/packer_cache
 **/*.pkrvars.hcl
 fixture_*

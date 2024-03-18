@@ -1,7 +1,7 @@
 # Analytics Engineering Framework - Data Model
 [Analytics engineers](https://www.getdbt.com/what-is-analytics-engineering) transform, test, deploy, and document data using software engineering principles, providing clean datasets that empower end users to independently answer their own questions.
 
-This opininated Data Model management repository is a key component of a robust analytics environment, establishing a well-structured system to manage your data models, schemas, Dataplex lakes and zones, and data definition language (DDL) statements. It leverages Dataform to seamlessly integrate these elements, supporting lakehouse, data lake, and data mesh architectures.
+This opininated reference Data Model management repository is a key component of a robust analytics environment, establishing a well-structured system to manage your data models, schemas, Dataplex lakes and zones, and data definition language (DDL) statements. It leverages Dataform to seamlessly integrate these elements, supporting lakehouse, data lake, and data mesh architectures.
 
 ### Key Features & Concepts
 This repository is your central hub for streamlined data model definition, governance, and collaboration.  Here's what it offers:
@@ -22,9 +22,8 @@ This repository is your central hub for streamlined data model definition, gover
 ### Folder Structure
 - **terraform**:
   - `main.tf`:
-    - Creates a BigLake connection for GCS files. 
-    - Creates BigQuery datasets for the data layers: landing, curated, and exposure.
-    - Generates a `../dataform/dataform.json` file that provides parameters to reference the Terraform-created infrastructure during Dataform operations.
+    - Creates BigQuery datasets based on what you give as parameters i.e. (landing, curated, and exposure). 
+    - Generates a `dataform.json` file that provides parameters to reference the Terraform-created datasets during Dataform operations.
   - `prod.tfvars`:
     - Set your base project, for the core resources.
     - Define your datasets.
@@ -82,6 +81,8 @@ In case you want to create some sample data sources (GCS bucket with some files,
 
 ### Folder Structure
 - **terraform**:
+  - `main.tf`: 
+    - Creates a BigLake connection for GCS files.
   - `gcs.tf`:
     - Creates data landing GCS buckets. And uploads sample data.
   - `fake_on_prem_db.tf`:

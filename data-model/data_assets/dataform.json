@@ -1,0 +1,22 @@
+{
+  "defaultSchema": "dataform",
+  "assertionSchema": "dataform_assertions",
+  "defaultLocation": "us-central1",
+  "warehouse": "bigquery",
+  "vars": {
+    "connection_name": "pso-amex-data-platform-sample-connection",
+    "dataset_id_landing": "landing_sample_dataset",
+    "dataset_projectid_landing": "pso-amex-data-platform",
+    "dataset_location_landing": "us-central1",
+    "dataset_description_landing": "Landing dataset description",
+    "dataset_id_curated": "curated_sample_dataset",
+    "dataset_projectid_curated": "pso-amex-data-platform",
+    "dataset_location_curated": "us-central1",
+    "dataset_description_curated": "curated dataset description",
+    "dataset_id_exposure": "exposure_sample_dataset",
+    "dataset_projectid_exposure": "pso-amex-data-platform",
+    "dataset_location_exposure": "us-central1",
+    "dataset_description_exposure": "Exposure dataset description",
+    "sample_data_bucket": ""
+  }
+}

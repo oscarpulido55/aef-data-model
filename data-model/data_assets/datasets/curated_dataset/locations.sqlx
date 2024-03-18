@@ -8,5 +8,7 @@ config {
 }
 
 CREATE TABLE
-  `${dataform.projectConfig.vars.curated_dataset_project_id}.${dataform.projectConfig.vars.curated_dataset_dataset_id}.location` ( location_id INTEGER,
+  `${dataform.projectConfig.vars.curated_dataset_project_id}.${dataform.projectConfig.vars.curated_dataset_dataset_id}location`
+  (
+    location_id INTEGER,
     location_name STRING )

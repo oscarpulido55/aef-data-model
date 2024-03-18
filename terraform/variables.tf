@@ -26,18 +26,16 @@ variable "region" {
   nullable    = false
 }
 
-variable "datasets" {
+variable "dataform_params" {
+  description = "dataform.json parameters file that will define the datasets that need to be created via terraform."
+  type = string
   nullable    = false
-  description = "A map of datasets, each containing a project_id where the dataset will be created."
-  type        = map(object({
-    dataset_id = string
-    project_id = string
-    location   = string
-  }))
 }
 
-
+#------------------------------------------------------------------------------------
 #From here variables are optional and util for demo purposes only
+#------------------------------------------------------------------------------------
+
 variable "create_demo_data" {
   description = "Variable that will define if demo BD will be created and if demo files will be uploaded. "
   type        = string

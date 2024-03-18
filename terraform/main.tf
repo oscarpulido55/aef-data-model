@@ -14,43 +14,21 @@
  * limitations under the License.
  */
 
-# Creates a cloud resource connection.
-resource "google_bigquery_connection" "connection" {
-  connection_id = "${var.project}-sample-connection"
-  project       = var.project
-  location      = var.region
-  cloud_resource {}
-}
-
-# Grants permissions to the service account of the connection created in the last step.
-resource "google_project_iam_member" "connectionPermissionGrant" {
-  project = var.project
-  role    = "roles/storage.objectViewer"
-  member  = format("serviceAccount:%s", google_bigquery_connection.connection.cloud_resource[0].service_account_id)
-}
-
-# Create datasets define via terraform variables if any
+/* Create datasets defined via dataform.json variables if any, it should include 3 variables for each dataset with next format:
+    "dataset_id_<DATASET_IDENTIFIER>":"<YOUR_DATASET_NAME>",
+    "dataset_projectid_<DATASET_IDENTIFIER>":"<YOUR_DATASET_PROJECT>",
+    "dataset_location_<DATASET_IDENTIFIER>":"<YOUR_DATASET_LOCATION>",
+*/
 resource "google_bigquery_dataset" "datasets" {
-  for_each   = var.datasets
-  dataset_id = each.value.dataset_id
-  project    = each.value.project_id
+  for_each   = local.datasets
+  dataset_id = each.value.id
+  project    = each.value.projectid
   location   = each.value.location
+  description = each.value.description
 }
 
-# Create dataform parameters file
-resource "local_file" "dataform_config" {
-  content  = <<EOF
-  {
-    "defaultSchema": "dataform",
-    "assertionSchema": "dataform_assertions",
-    "defaultLocation": "${var.region}",
-    "warehouse": "bigquery",
-    "vars": {
-      "connection_name": "${google_bigquery_connection.connection.connection_id}",
-      ${local.dataset_vars},
-      ${local.demo_dataform_vars_trimmed}
-    }
+resource "null_resource" "run_metadata_deployer" {
+  provisioner "local-exec" {
+    command = "python ../data-model/metadata_deployer.py --project_id ${var.project} --location ${var.region}"
   }
-  EOF
-  filename = "../dataform/dataform.json"
 }

@@ -1,25 +1,25 @@
 locals {
-  datasets = jsonencode({
-    for ds_key, ds in var.datasets : format("%s_dataset_id", ds_key) =>  ds.dataset_id
-  })
-  dataset_tm = substr(local.datasets, 1, length(local.datasets) - 2)
+  #Reads dataform.json file
+  dataform_config = jsondecode(file(var.dataform_params))
 
-  projects = jsonencode({
-    for ds_key, ds in var.datasets : format("%s_project_id", ds_key) =>  ds.project_id
+  /* Create datasets defined via dataform.json variables if any, it should include 3 variables for each dataset with next format:
+      "dataset_id_<DATASET_IDENTIFIER>":"<YOUR_DATASET_NAME>",
+      "dataset_projectid_<DATASET_IDENTIFIER>":"<YOUR_DATASET_PROJECT>",
+      "dataset_location_<DATASET_IDENTIFIER>":"<YOUR_DATASET_LOCATION>",
+  */
+  variables = ({
+    for k, v in local.dataform_config.vars : split("_", k)[2] => {
+      (split("_", k)[1]) = v
+    }...
+    if substr(k, 0, 8) == "dataset_"
   })
-  projects_tm = substr(local.projects, 1, length(local.projects) - 2)
+  datasets = {
+    for dataset_name, attribute_list in local.variables : dataset_name => merge(attribute_list...)
+  }
 
-  locations = jsonencode({
-    for ds_key, ds in var.datasets : format("%s_location", ds_key) =>  ds.location
-  })
-  locations_tm = substr(local.locations, 1, length(local.locations) - 2)
+  connection_name = ([
+    for k, v in local.dataform_config.vars :  v
+    if k == "connection_name"
+  ])
 
-  dataset_vars = format("%s,%s,%s", local.dataset_tm, local.projects_tm, local.locations_tm)
-
-  demo_dataform_vars= jsonencode({
-    sample_data_bucket: length(google_storage_bucket.sample_data_bucket) > 0 ? google_storage_bucket.sample_data_bucket[0].name : "",
-    start_date: var.sample_default_date ,
-    end_date: var.sample_default_date
-  })
-  demo_dataform_vars_trimmed = substr(local.demo_dataform_vars, 1, length(local.demo_dataform_vars) - 2)
 }

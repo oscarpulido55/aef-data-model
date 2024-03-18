@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#------------------------------------------------------------------------------------
+# Resources here will be created optionally if demo mode is enabled
+#------------------------------------------------------------------------------------
+
 module "fake_on_prem_instance" {
   count          = var.create_demo_data ? 1 : 0
   source         = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/cloudsql-instance"

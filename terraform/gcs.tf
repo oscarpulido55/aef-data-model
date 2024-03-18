@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
+# Create cortex temporal storage bucket, to store tmp files generated during deployment.
+resource "google_storage_bucket" "tmp_cortex_bucket" {
+  name                     = "${var.project}-cortex-tmp-bucket"
+  location                 = var.region
+  project                  = var.project
+  public_access_prevention = "enforced"
+  force_destroy            = true
+}
+
+#------------------------------------------------------------------------------------
+# Resources FROM here will be created optionally if demo mode is enabled
+#------------------------------------------------------------------------------------
+
 # Create sample storage bucket.
 resource "google_storage_bucket" "sample_data_bucket" {
   count                    = var.create_demo_data ? 1 : 0
@@ -31,4 +44,21 @@ resource "google_storage_bucket_object" "objects" {
   source     = each.value.source
   bucket     = google_storage_bucket.sample_data_bucket[0].name
   depends_on = [google_storage_bucket.sample_data_bucket]
+}
+
+# Creates a cloud resource connection.
+resource "google_bigquery_connection" "connection" {
+  count         = var.create_demo_data ? 1 : 0
+  connection_id = local.connection_name[0]
+  project       = var.project
+  location      = var.region
+  cloud_resource {}
+}
+
+# Grants permissions to the service account of the connection created in the last step.
+resource "google_project_iam_member" "connectionPermissionGrant" {
+  count   = var.create_demo_data ? 1 : 0
+  project = var.project
+  role    = "roles/storage.objectViewer"
+  member  = format("serviceAccount:%s", google_bigquery_connection.connection[0].cloud_resource[0].service_account_id)
 }
