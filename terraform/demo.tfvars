@@ -2,7 +2,7 @@ project             = "pso-amex-data-platform"
 region              = "us-central1"
 sample_data_bucket  = "my-sample-data-bucket"
 sample_default_date = "2024-02-26"
-dataform_params  = "../data-model/sample_dataform_repository/dataform.json"
+dataform_params  = "../data-model/dataform_repositories/sample_dataform_repository/dataform.json"
 
 create_demo_data    = true
 
