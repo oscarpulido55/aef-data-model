@@ -20,13 +20,14 @@
     "dataset_location_<DATASET_IDENTIFIER>":"<YOUR_DATASET_LOCATION>",
 */
 resource "google_bigquery_dataset" "datasets" {
-  for_each   = local.datasets
-  dataset_id = each.value.id
-  project    = each.value.projectid
-  location   = each.value.location
+  for_each    = local.datasets
+  dataset_id  = each.value.id
+  project     = each.value.projectid
+  location    = each.value.location
   description = each.value.description
 }
 
+#Runs the cortex datamesh deployer with the given parameters in the defined folder structure.
 resource "null_resource" "run_metadata_deployer" {
   provisioner "local-exec" {
     command = "python ../data-model/metadata_deployer.py --project_id ${var.project} --location ${var.region}"

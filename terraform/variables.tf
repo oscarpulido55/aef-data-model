@@ -15,13 +15,13 @@
  */
 
 variable "project" {
-  description = "Project where the core BigLake bigquery_connection will be created."
+  description = "Project where the core BigLake bigquery_connection and other resources will be created."
   type        = string
   nullable    = false
 }
 
 variable "region" {
-  description = "Region where the core BigLake bigquery_connection and will be created."
+  description = "Region where the core BigLake bigquery_connection and other resources will be created."
   type        = string
   nullable    = false
 }
@@ -30,6 +30,13 @@ variable "dataform_params" {
   description = "dataform.json parameters file that will define the datasets that need to be created via terraform."
   type = string
   nullable    = false
+}
+
+variable "remote_repo_url" {
+  description = "Attached remote repository for the dataform repository."
+  type = string
+  nullable    = true
+  default = ""
 }
 
 #------------------------------------------------------------------------------------

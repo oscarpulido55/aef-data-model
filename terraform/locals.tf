@@ -22,4 +22,5 @@ locals {
     if k == "connection_name"
   ])
 
+  repository_name  = split("/", var.dataform_params)[length(split("/", var.dataform_params))-2]
 }

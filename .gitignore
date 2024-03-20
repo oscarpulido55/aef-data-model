@@ -28,6 +28,7 @@ cloud-sql-proxy
 Demo/*
 data-model/metadata/metadata-deployer/cortex_src_code/*
 data-model-deployer/cortex_src_code/*
+terraform/metadata/metadata-deployer/cortex_src_code/*
 **/packer_cache
 **/*.pkrvars.hcl
 fixture_*
