@@ -13,20 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+# Create sample storage bucket.
+resource "google_storage_bucket" "sample_data_bucket" {
+  name                     = "${var.project}-${var.sample_data_bucket}"
+  location                 = var.region
+  project                  = var.project
+  public_access_prevention = "enforced"
+  force_destroy            = true
+}
 
-#------------------------------------------------------------------------------------
-# Resources here will be created optionally if demo mode is enabled
-#------------------------------------------------------------------------------------
+# Copy files to gcs, create partitions
+resource "google_storage_bucket_object" "objects" {
+  for_each   = var.sample_files
+  name       = each.value.name
+  source     = each.value.source
+  bucket     = google_storage_bucket.sample_data_bucket.name
+  depends_on = [google_storage_bucket.sample_data_bucket]
+}
+
+# Creates a cloud resource connection.
+resource "google_bigquery_connection" "connection" {
+  connection_id = local.connections["connection_name"]["connection"]
+  project       = var.project
+  location      = var.region
+  cloud_resource {}
+}
+
+# Grants permissions to the service account of the connection created in the last step.
+resource "google_project_iam_member" "connectionPermissionGrant" {
+  project = var.project
+  role    = "roles/storage.objectViewer"
+  member  = format("serviceAccount:%s", google_bigquery_connection.connection.cloud_resource[0].service_account_id)
+}
+
+#Search for and read dataform.json files in the input dataform repositories
+data "github_repository_file" "dataform_config" {
+  for_each   = var.dataform_repositories
+  repository = local.git_path[each.key]
+  branch     = each.value.branch
+  file       = "dataform.json"
+}
 
 module "fake_on_prem_instance" {
-  count          = var.create_demo_data ? 1 : 0
   source         = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/cloudsql-instance"
   project_id     = var.project
   network_config = {
     connectivity = {
       public_ipv4 = true
       psa_config  = {
-        private_network = module.vpc[0].self_link
+        private_network = module.vpc.self_link
       }
     }
   }
@@ -40,7 +75,6 @@ module "fake_on_prem_instance" {
 }
 
 module "vpc" {
-  count      = var.create_demo_data ? 1 : 0
   source     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/net-vpc"
   project_id = var.project
   name       = "fake-on-prem-network-for-sql"
@@ -50,22 +84,20 @@ module "vpc" {
 }
 
 resource "google_sql_user" "user" {
-  count    = var.create_demo_data ? 1 : 0
   project  = var.project
   name     = "user1"
-  instance = module.fake_on_prem_instance[0].name
+  instance = module.fake_on_prem_instance.name
   password = "changeme"
 }
 
 resource "null_resource" "init_db" {
-  count = var.create_demo_data ? 1 : 0
   provisioner "local-exec" {
     command = <<EOF
         curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.9.0/cloud-sql-proxy.darwin.arm64
         chmod +x cloud-sql-proxy
-        nohup ./cloud-sql-proxy ${var.project}:${var.region}:${module.fake_on_prem_instance[0].name} >/dev/null & >/dev/null &
+        nohup ./cloud-sql-proxy ${var.project}:${var.region}:${module.fake_on_prem_instance.name} >/dev/null & >/dev/null &
         sleep 3
-        psql "host=127.0.0.1 sslmode=disable dbname=postgres user=user1" -f ../sample-data/fake-on-prem-postgresql/sample_db_populator.sql
+        psql "host=127.0.0.1 sslmode=disable dbname=postgres user=user1 password=changeme" -f ../fake-on-prem-postgresql/sample_db_populator.sql
         PID=$(lsof -i tcp:5432 | grep LISTEN | awk '{print $2}')
         kill -9 $PID
       EOF
@@ -74,13 +106,16 @@ resource "null_resource" "init_db" {
 }
 
 resource "null_resource" "cleanup" {
-  count = var.create_demo_data ? 1 : 0
+  triggers = {
+    region      = var.region
+    project = var.project
+  }
   provisioner "local-exec" {
     when    = destroy
     command = <<EOF
-      nohup ./cloud-sql-proxy pso-amex-data-platform:us-central1:fake-on-prem-instance >/dev/null & >/dev/null &
+      nohup ./cloud-sql-proxy ${self.triggers.project}:${self.triggers.region}:fake-on-prem-instance >/dev/null & >/dev/null &
       sleep 3
-      psql "host=127.0.0.1 sslmode=disable dbname=postgres user=user1" -f ../sample-data/fake-on-prem-postgresql/cleanup_db.sql
+      psql "host=127.0.0.1 sslmode=disable dbname=postgres user=user1 password=changeme" -f ../fake-on-prem-postgresql/cleanup_db.sql
       gcloud compute networks peerings delete servicenetworking-googleapis-com --network=fake-on-prem-network-for-sql
       PID=$(lsof -i tcp:5432 | grep LISTEN | awk '{print $2}')
       kill -9 $PID
@@ -88,4 +123,9 @@ resource "null_resource" "cleanup" {
     EOF
   }
   depends_on = [module.vpc, google_sql_user.user]
+}
+
+provider "github" {
+  token = var.git_token
+  owner = "demo"
 }

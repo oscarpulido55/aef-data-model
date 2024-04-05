@@ -41,6 +41,7 @@ def run_deploy_data_mesh(config_file, tag_template_directories, policy_directori
     # Check if dependencies are installed
     if not all([os.path.exists(req) for req in open(requirements_path)]):
         new_lines = [
+            "exceptiongroup",
             "google-api-core",
             "google-cloud-bigquery",
             "google-cloud-bigquery-datapolicies",

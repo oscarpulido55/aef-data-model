@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-variable "domain" {
-  description = "Your organization or domain name"
-  type        = string
-  nullable    = false
-}
 
 variable "project" {
-  description = "Project where the the dataform repositories, the Dataplex metadata, and other resources will be created."
+  description = "Project where the core BigLake bigquery_connection and other resources will be created."
   type        = string
   nullable    = false
 }
 
 variable "region" {
-  description = "Region where the datasets from the dataform.json files, the dataform repositories, and the Dataplex metadata, and other resources will be created."
+  description = "Region where the core BigLake bigquery_connection and other resources will be created."
   type        = string
   nullable    = false
 }
@@ -44,8 +39,31 @@ variable "dataform_repositories" {
 }
 
 variable "git_token" {
-  description = "Git token to access the dataform repositories, it will be stored as a secret in secret manager, and it will be used to connect and read the dataform.json to create the datasets"
+  description = "Git token to access the dataform repositories, it will be used to connect and read the dataform.json to create the BigLake connection"
   type        = string
   nullable    = false
   sensitive   = true
+}
+
+variable "sample_data_bucket" {
+  nullable    = true
+  default     = null
+  description = "Bucket where sample data will be stored."
+  type        = string
+}
+
+variable "sample_files" {
+  nullable = true
+  default  = null
+  type     = map(object({
+    name   = string
+    source = string
+  }))
+  description = "A map where values are objects containing 'source' (path to the file) and optional 'content'."
+}
+
+variable "sample_default_date" {
+  nullable = true
+  default  = null
+  type     = string
 }

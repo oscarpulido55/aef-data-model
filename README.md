@@ -1,40 +1,36 @@
 # Analytics Engineering Framework - Data Model
 [Analytics engineers](https://www.getdbt.com/what-is-analytics-engineering) transform, test, deploy, and document data using software engineering principles, providing clean datasets that empower end users to independently answer their own questions.
 
-This opininated reference Data Model management repository is a key component of a robust analytics environment, establishing a well-structured system to manage your data models, schemas, Dataplex lakes and zones, and data definition language (DDL) statements. It leverages Dataform to seamlessly integrate these elements, supporting lakehouse, data lake, and data mesh architectures.
-
 ### Key Features & Concepts
-This repository is your central hub for streamlined data model definition, governance, and collaboration.  Here's what it offers:
+This reference Data Model management repository is your central hub for streamlined data model definition by deploying datafrom repositories, enabling data governance, discoverability, and access control through BigQuery metadata, [Dataplex](https://cloud.google.com/dataplex) and [Data Catalog](https://cloud.google.com/data-catalog/docs/concepts/overview), discoverability, and access control through metadata, Here's what it offers:
 
-- **Data Modeling and Schema Management:** Create and maintain robust data models and schemas to ensure data integrity and consistency across your pipelines.
 - **Dataplex Integration:** Seamlessly organize and govern your data lake and warehouse environments using Google Cloud Dataplex's powerful features:
   - **Lakes and Zones:** Structure your data logically for easy management.
   - **Governance Rules:** Enforce data quality, security, and compliance standards.
   - **Metadata Management:** Enrich data understanding with tags, taxonomies, and business glossaries.
-- **DDL Management:** Define your table structures (CREATE TABLE, etc.) using standard SQL Data Definition Language (DDL) directly within this repository.
 
 - **Dataform Integration:**  Leverage Dataform to deploy and maintain your table definitions flexibly across lakehouse, data lake, and data mesh architectures.
 
 - **Collaboration:**  Foster a shared understanding of data structures and their context across teams, promoting transparency and effective data-driven decision-making.
 
 
-
 ### Folder Structure
 - **terraform**:
-  - `main.tf`:
-    - Creates BigQuery datasets based on what you give as parameters i.e. (landing, curated, and exposure). 
-    - Generates a `dataform.json` file that provides parameters to reference the Terraform-created datasets during Dataform operations.
-  - `prod.tfvars`:
-    - Set your base project, for the core resources.
-    - Define your datasets.
+  - Creates BigQuery datasets based on the variables you have in the `dataform.json` you have in the repositories you reference.
+- **data-model:**
+  - Create/register Dataplex lakes and zones accordingly.
+  - Defines tag templates, policy tags, and governance rules to be applied to data assets.
 ```
-└── terraform
-│   ├── prod.tfvars
-│   ├── locals.tf
-│   ├── variables.tf
-│   ├── output.tf
-│   └── main.tf
+└── metadata
+│   ├── lakes
+│   │   └── lakes.yaml
+│   ├── policy_taxonomies
+│   │   └── policy_taxonomies.yaml
+│   └── tag_templates
+│       └── tag_templates.yaml
 ```
+- **sample-data:**
+
 - **dataform:**
   - Houses your table definitions using a structure recommended for Dataform repositories.
   - Subfolders organized by Dataplex lakes and zones for clear structure.
@@ -47,14 +43,6 @@ This repository is your central hub for streamlined data model definition, gover
 │   │        └── ...
 │   └── dataform.json (auto generated when running terraform apply)
 
-```
-- **dataplex:**
-  - Logic to understand the Dataform folder structure and create/register Dataplex lakes and zones accordingly.
-  - Defines tag templates, policy tags, and governance rules to be applied to Dataform-defined tables.
-```
-└── dataplex
-│   ├── lakes.yaml
-│   └── zones.yaml
 ```
 
 ### Usage

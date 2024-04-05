@@ -1,39 +1,54 @@
 #In order to enable dataform to communicate with a 3P GIT provider,
 #an access token must be generated and stored as a secret on GCP
-module "secret" {
-  count      = var.remote_repo_url != "" ? 1 : 0
+module "secrets" {
+  for_each   = var.dataform_repositories
   source     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/secret-manager"
   project_id = var.project
   secrets    = {
-    my-secret = {
+    "${each.value.secret_name}" = {
     }
   }
   versions = {
-    my-secret = {
-      v1 = { enabled = true, data = "MYTOKEN" }
+    "${each.value.secret_name}" = {
+      "${each.value.secret_version}" = {
+        enabled = true,
+        data    = var.git_token
+      }
+    }
+  }
+  iam = {
+    "${each.value.secret_name}" = {
+      "roles/secretmanager.secretAccessor" = [
+        module.dataform-service-accounts[each.key].iam_email
+      ]
     }
   }
 }
 
 #creates a dataform repository with a remote repository attached to it.
-module "dataform_with_external_repo" {
-  count                      = var.remote_repo_url != "" ? 1 : 0
+module "dataform_with_external_repos" {
+  for_each                   = var.dataform_repositories
   source                     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/dataform-repository"
   project_id                 = var.project
-  name                       = local.repository_name
+  name                       = each.key
   region                     = var.region
   remote_repository_settings = {
-    url         = var.remote_repo_url
-    secret_name = "my-secret"
-    token       = module.secret[0].version_ids["my-secret:v1"]
+    url            = each.value.remote_repo_url
+    branch         = each.value.branch
+    secret_name    = each.value.secret_name
+    secret_version = module.secrets[each.key].version_ids["${var.dataform_repositories[each.key].secret_name}:${var.dataform_repositories[each.key].secret_version}"]
   }
+  service_account = module.dataform-service-accounts[each.key].iam_email
 }
 
-##creates a dataform repository without remote repo, if repo url variable is empty.
-module "dataform" {
-  count      = var.remote_repo_url == "" ? 1 : 0
-  source     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/dataform-repository"
-  project_id = var.project
-  name       = local.repository_name
-  region     = var.region
+module "dataform-service-accounts" {
+  for_each          = var.dataform_repositories
+  source            = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/iam-service-account"
+  project_id        = var.project
+  name              = each.value.service_account_name
+  iam_project_roles = {
+    "${var.project}" = [
+      "roles/dataform.editor"
+    ]
+  }
 }

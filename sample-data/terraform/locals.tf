@@ -29,19 +29,17 @@ locals {
     for config in local.dataform_configs : config.vars
   ]...)
 
-  /* Create datasets defined via dataform.json variables if any, it should include 3 variables for each dataset with next format:
-      "dataset_id_<DATASET_IDENTIFIER>":"<YOUR_DATASET_NAME>",
-      "dataset_projectid_<DATASET_IDENTIFIER>":"<YOUR_DATASET_PROJECT>",
-      "dataset_location_<DATASET_IDENTIFIER>":"<YOUR_DATASET_LOCATION>",
+  /* Create BigLake Connection Name:
+      "connection_name_YOUR_CONNECTION_NAME"
   */
   variables = ({
-    for k, v in local.all_vars : split("_", k)[2] => {
-      (split("_", k)[1]) = v
+    for k, v in local.all_vars : k => {
+      connection = v
     }...
-    if substr(k, 0, 8) == "dataset_"
+    if k == "connection_name"
   })
 
-  datasets = {
+  connections = {
     for dataset_name, attribute_list in local.variables : dataset_name => merge(attribute_list...)
   }
 }

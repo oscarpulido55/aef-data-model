@@ -27,9 +27,36 @@ resource "google_bigquery_dataset" "datasets" {
   description = each.value.description
 }
 
+# Create cortex temporal storage bucket, to store tmp files generated during deployment.
+resource "google_storage_bucket" "tmp_cortex_bucket" {
+  name                     = "${var.project}-cortex-tmp-bucket"
+  location                 = var.region
+  project                  = var.project
+  public_access_prevention = "enforced"
+  force_destroy            = true
+}
+
 #Runs the cortex datamesh deployer with the given parameters in the defined folder structure.
 resource "null_resource" "run_metadata_deployer" {
   provisioner "local-exec" {
-    command = "python ../data-model/metadata_deployer.py --project_id ${var.project} --location ${var.region}"
+    command = <<EOF
+      python3 -m venv aef_metadata_deployer
+      source aef_metadata_deployer/bin/activate
+      python3 ../data-model/metadata_deployer.py --project_id ${var.project} --location ${var.region}
+    EOF
   }
+}
+
+provider "github" {
+  # If using the GITHUB_TOKEN environment variable, no need to specify token
+  token = var.git_token
+  owner = var.domain
+}
+
+#Search for and read dataform.json files in the input dataform repositories
+data "github_repository_file" "dataform_config" {
+  for_each   = var.dataform_repositories
+  repository = local.git_path[each.key]
+  branch     = each.value.branch
+  file       = "dataform.json"
 }
