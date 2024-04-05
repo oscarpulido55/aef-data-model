@@ -4,14 +4,11 @@ Use this in case you want to create some sample data sources (GCS bucket with so
   - Create data landing GCS buckets. And uploads sample data.
   - Create a dummy PostgreSQL database to simulate an on-premises data source that can't be accessed using BigQuery Omni or BigLake. And inserts sample data.
 
-  - **fake-on-prem-postgresql:**  Contains sample data to be inserted into the dummy on-premises database.
-  - **gcs-files:**  Contains sample files to be located in the landing GCS bucket and accessed with BigQuery BigLake.
-
 ### Usage
 **Important:** Using this repository involves creating tables and managing data. We've included simple data and tables for demonstration.
 
 #### Steps
-1. **Terraform:** Define your terraform variables.
+1. **Terraform:** Define your terraform variables. We recommend creating a `.tfvars` file.
 ```hcl
 project             = "my-project"
 region              = "us-central1"
@@ -48,4 +45,9 @@ sample_files = {
 1. Run the Terraformn Plan / Apply
 ```commandline
 terraform plan -var-file="demo.tfvars"
+```
+
+1. Cleaning
+```commandline
+terraform destroy -var-file="demo.tfvars"
 ```

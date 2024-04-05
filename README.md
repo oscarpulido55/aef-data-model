@@ -2,8 +2,7 @@
 [Analytics engineers](https://www.getdbt.com/what-is-analytics-engineering) transform, test, deploy, and document data using software engineering principles, providing clean datasets that empower end users to independently answer their own questions.
 
 ### Concepts
-This reference Data Model management repository is your central hub for streamlined data model definition by deploying dataform repositories, enabling data governance, discoverability, and access control through BigQuery metadata, [Dataplex](https://cloud.google.com/dataplex) and [Data Catalog](https://cloud.google.com/data-catalog/docs/concepts/overview), discoverability, and access control through metadata, Here's what it offers:
-
+This reference Data Model management repository is your central hub for streamlined data model definition. It deploys dataform repositories and integrates with BigQuery metadata and [Dataplex](https://cloud.google.com/dataplex) to enable data governance, discoverability, and access control. Here's what it offers:
 - **terraform**:
   - Creates BigQuery datasets based on the variables you have in the `dataform.json` files you have in the repositories you reference.
 - **data-model:**
@@ -11,7 +10,7 @@ This reference Data Model management repository is your central hub for streamli
   - Defines tag templates, policy tags, and governance rules to be applied to data assets.
 
 ### Usage
-1. **Terraform:** Define your terraform variables.
+1. **Terraform:** Define your terraform variables.  We recommend creating a `.tfvars` file.
 ```hcl
 project               = "my-project"
 region                = "us-central1"
