@@ -15,18 +15,18 @@ dataform_repositories = {
 sample_files = {
   "location" = {
     name   = "locations/location.csv"
-    source = "../gcs_files/location.csv"
+    source = "../gcs-files/location.csv"
   },
   "product" = {
     name   = "products/product.csv"
-    source = "../gcs_files/product.csv"
+    source = "../gcs-files/product.csv"
   },
   "sales-dt1" = {
     name   = "sales/2024-03-11/sales_dt1.csv"
-    source = "../gcs_files/sales_dt1.csv"
+    source = "../gcs-files/sales_dt1.csv"
   },
   "sales-dt2" = {
     name   = "/sales/2024-03-12/sales_dt2.csv"
-    source = "../gcs_files/sales_dt2.csv"
+    source = "../gcs-files/sales_dt2.csv"
   }
 }
