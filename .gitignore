@@ -17,6 +17,7 @@ terraform/aef_bigquery_ddl_runner/*
 terraform/aef_dataform_execuor/*
 sample-data/terraform/demo.tfvars
 terraform/prod.tfvars
+terraform/metadata/metadata-deployer
 .idea
 .vscode
 .gitmodules
