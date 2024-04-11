@@ -25,6 +25,7 @@ locals {
     for repo_key, repo_data in var.dataform_repositories :
     jsondecode(data.github_repository_file.dataform_config[repo_key].content)
   ]
+
   all_vars = merge([
     for config in local.dataform_configs : config.vars
   ]...)

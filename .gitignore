@@ -12,6 +12,11 @@ venv/*
 **/__pycache__
 **/.pytest_cache
 **/.test.lock
+terraform/metadata/metadata-deployer/cortex_src_code/*
+terraform/aef_bigquery_ddl_runner/*
+terraform/aef_dataform_execuor/*
+sample-data/terraform/demo.tfvars
+terraform/prod.tfvars
 .idea
 .vscode
 .gitmodules

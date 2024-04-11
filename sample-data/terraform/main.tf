@@ -13,27 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+provider "github" {
+  token = var.git_token
+  owner = "demo"
+}
+
+#project reference to get project number
+data "google_project" "project" {
+  project_id = var.project
+}
+
 # Create sample storage bucket.
 resource "google_storage_bucket" "sample_data_bucket" {
-  name                     = "${var.project}-${var.sample_data_bucket}"
+  name                     = var.sample_data_bucket
   location                 = var.region
   project                  = var.project
   public_access_prevention = "enforced"
   force_destroy            = true
 }
 
-# Copy files to gcs, create partitions
-resource "google_storage_bucket_object" "objects" {
-  for_each   = var.sample_files
+# Create sample DDLs bucket.
+resource "google_storage_bucket" "sample_ddl_bucket" {
+  name                     = var.sample_ddl_bucket
+  location                 = var.region
+  project                  = var.project
+  public_access_prevention = "enforced"
+  force_destroy            = true
+}
+
+# Copy data files to gcs
+resource "google_storage_bucket_object" "data_files" {
+  for_each   = var.sample_data_files
   name       = each.value.name
   source     = each.value.source
   bucket     = google_storage_bucket.sample_data_bucket.name
   depends_on = [google_storage_bucket.sample_data_bucket]
 }
 
+# Copy ddl files to gcs
+resource "google_storage_bucket_object" "ddl_files" {
+  for_each   = var.sample_ddl_files
+  name       = each.value.name
+  source     = each.value.source
+  bucket     = google_storage_bucket.sample_ddl_bucket.name
+  depends_on = [google_storage_bucket.sample_ddl_bucket]
+}
+
 # Creates a cloud resource connection.
 resource "google_bigquery_connection" "connection" {
-  connection_id = local.connections["connection_name"]["connection"]
+  #connection_id = local.connections["connection_name"]["connection"]
+  connection_id = "sample-connection"
   project       = var.project
   location      = var.region
   cloud_resource {}
@@ -46,7 +75,6 @@ resource "google_project_iam_member" "connectionPermissionGrant" {
   member  = format("serviceAccount:%s", google_bigquery_connection.connection.cloud_resource[0].service_account_id)
 }
 
-#Search for and read dataform.json files in the input dataform repositories
 data "github_repository_file" "dataform_config" {
   for_each   = var.dataform_repositories
   repository = local.git_path[each.key]
@@ -123,9 +151,4 @@ resource "null_resource" "cleanup" {
     EOF
   }
   depends_on = [module.vpc, google_sql_user.user]
-}
-
-provider "github" {
-  token = var.git_token
-  owner = "demo"
 }

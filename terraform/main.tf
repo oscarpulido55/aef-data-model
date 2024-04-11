@@ -13,50 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/* Create datasets defined via dataform.json variables if any, it should include 3 variables for each dataset with next format:
-    "dataset_id_<DATASET_IDENTIFIER>":"<YOUR_DATASET_NAME>",
-    "dataset_projectid_<DATASET_IDENTIFIER>":"<YOUR_DATASET_PROJECT>",
-    "dataset_location_<DATASET_IDENTIFIER>":"<YOUR_DATASET_LOCATION>",
-*/
-resource "google_bigquery_dataset" "datasets" {
-  for_each    = local.datasets
-  dataset_id  = each.value.id
-  project     = each.value.projectid
-  location    = each.value.location
-  description = each.value.description
-}
-
-# Create cortex temporal storage bucket, to store tmp files generated during deployment.
-resource "google_storage_bucket" "tmp_cortex_bucket" {
-  name                     = "${var.project}-cortex-tmp-bucket"
-  location                 = var.region
-  project                  = var.project
-  public_access_prevention = "enforced"
-  force_destroy            = true
-}
-
-#Runs the cortex datamesh deployer with the given parameters in the defined folder structure.
-resource "null_resource" "run_metadata_deployer" {
-  provisioner "local-exec" {
-    command = <<EOF
-      python3 -m venv aef_metadata_deployer
-      source aef_metadata_deployer/bin/activate
-      python3 ../data-model/metadata_deployer.py --project_id ${var.project} --location ${var.region}
-    EOF
-  }
-}
-
 provider "github" {
   # If using the GITHUB_TOKEN environment variable, no need to specify token
-  token = var.git_token
+  token = var.dataform_repositories_git_token
   owner = var.domain
 }
 
-#Search for and read dataform.json files in the input dataform repositories
-data "github_repository_file" "dataform_config" {
-  for_each   = var.dataform_repositories
-  repository = local.git_path[each.key]
-  branch     = each.value.branch
-  file       = "dataform.json"
+provider "google-beta" {
+  project = var.project
+  region  = var.region
+}
+
+#project reference to get project number
+data "google_project" "project" {
+  project_id = var.project
 }

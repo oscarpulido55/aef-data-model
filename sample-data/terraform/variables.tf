@@ -33,7 +33,6 @@ variable "dataform_repositories" {
     branch               = optional(string, "main")
     secret_name          = optional(string)
     secret_version       = optional(string, "v1")
-    service_account_name = optional(string)
   }))
   default = {}
 }
@@ -52,14 +51,31 @@ variable "sample_data_bucket" {
   type        = string
 }
 
-variable "sample_files" {
+variable "sample_data_files" {
   nullable = true
   default  = null
   type     = map(object({
     name   = string
     source = string
   }))
-  description = "A map where values are objects containing 'source' (path to the file) and optional 'content'."
+  description = "A map where values are objects containing 'source' (path to the file)"
+}
+
+variable "sample_ddl_bucket" {
+  nullable    = true
+  default     = null
+  description = "Bucket where sample DDLs will be stored."
+  type        = string
+}
+
+variable "sample_ddl_files" {
+  nullable = true
+  default  = null
+  type     = map(object({
+    name   = string
+    source = string
+  }))
+  description = "A map where values are objects containing 'source' (path to the file)"
 }
 
 variable "sample_default_date" {

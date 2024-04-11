@@ -119,10 +119,10 @@ def main(args: collections.abc.Sequence[str]) -> int:
 
     run_deploy_data_mesh(
         config_file=write_json_file(project_id, location),
-        tag_template_directories="../data-model/metadata/tag_templates",
-        policy_directories="../data-model/metadata/policy_taxonomies",
-        lake_directories="../data-model/metadata/lakes",
-        annotation_directories="",
+        tag_template_directories="../metadata/tag_templates",
+        policy_directories="../metadata/policy_taxonomies",
+        lake_directories="../metadata/lakes",
+        annotation_directories="../metadata/annotations",
         overwrite=True
     )
 

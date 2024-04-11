@@ -11,20 +11,31 @@ This reference Data Model management repository is your central hub for streamli
 
 ### Usage
 1. **Terraform:** Define your terraform variables.  We recommend creating a `.tfvars` file.
-```hcl
-project               = "my-project"
-region                = "us-central1"
-domain                = "my-org-name"
-git_token             = "my-git-token-value"
-dataform_repositories = {
-  sample-repo-1 = {
-    remote_repo_url      = "https://github.com/my-dataform-repo.git"
-    secret_name          = "my-github-token-secret-1"
-    service_account_name = "aef-dataform-repo1-sa"
-  },
-  ...
-}
-```
+    ```hcl
+    project               = "my-project"
+    region                = "us-central1"
+    domain                = "my-org-name"
+    git_token             = "my-git-token-value"
+    dataform_repositories = {
+      sample-repo-1 = {
+        remote_repo_url      = "https://github.com/my-dataform-repo.git"
+        secret_name          = "my-github-token-secret-1"
+        service_account_name = "aef-dataform-repo1-sa"
+      },
+      ...
+    }
+    ```
+   
+<!-- BEGIN TFDTFOC -->
+## Variables
+| name | description | type | required | default |
+|---|---|--|---|---|
+| [domain](variables.tf#L100) | Your organization or domain name | string | true | - |
+| [project](variables.tf#L104) | Project where the the dataform repositories, the Dataplex metadata, and other resources will be created. | string | true | - |
+| [region](variables.tf#L108) | Region where the datasets from the dataform.json files, the dataform repositories, and the Dataplex metadata, and other resources will be created. | string| true | - |
+| [dataform_repositories](variables.tf#L112) | Dataform repository remote settings required to attach the repository to a remote repository.  | map(object({ <br> &emsp;remote_repo_url = optional(string), <br> &emsp;branch = optional(string, "main"), <br> &emsp;secret_name = optional(string), <br> &emsp;secret_version = optional(string, "v1"), <br> &emsp;service_account_name = optional(string) <br> }))  | false | {} |
+| [git_token](variables.tf#L121) | Git token to access the dataform repositories, it will be stored as a secret in secret manager, and it will be used to connect and read the dataform.json to create the datasets | string | true | - |
+<!-- END TFDOC -->
 2. **Dataplex:** 
    - Familiarize with [this](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#concepts) concepts
    - Define metadata in the following `.yaml` files:
