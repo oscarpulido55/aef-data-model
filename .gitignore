@@ -12,12 +12,6 @@ venv/*
 **/__pycache__
 **/.pytest_cache
 **/.test.lock
-terraform/metadata/metadata-deployer/cortex_src_code/*
-terraform/aef_bigquery_ddl_runner/*
-terraform/aef_dataform_execuor/*
-sample-data/terraform/demo.tfvars
-terraform/prod.tfvars
-terraform/metadata/metadata-deployer
 .idea
 .vscode
 .gitmodules
@@ -33,8 +27,6 @@ bundle-*.zip
 cloud-sql-proxy
 .DS_Store
 Demo/*
-terraform/aef_metadata_deployer/*
-terraform/metadata/metadata-deployer/cortex_src_code/*
 **/packer_cache
 **/*.pkrvars.hcl
 fixture_*
