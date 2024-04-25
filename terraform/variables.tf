@@ -44,7 +44,7 @@ variable "execute_dataform_repositories" {
 }
 
 variable "domain" {
-  description = "Your organization or domain name."
+  description = "Your organization or domain name, organization if centralized data management, domain name if one repository for each data domain in a Data mesh environment."
   type        = string
   nullable    = false
 }
@@ -56,7 +56,7 @@ variable "project" {
 }
 
 variable "region" {
-  description = "Region where the datasets from the dataform.json files, the dataform repositories, and the Dataplex metadata, and other resources will be created."
+  description = "Region where the datasets from the dataform.json files, the dataform repositories, the Dataplex metadata, and other resources will be created."
   type        = string
   nullable    = false
 }
