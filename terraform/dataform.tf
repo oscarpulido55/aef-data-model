@@ -33,6 +33,12 @@ module "secrets" {
   }
 }
 
+resource "google_project_iam_member" "dataform_bigquery_owner" {
+  project = var.project
+  role    = "roles/bigquery.admin"
+  member  = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-dataform.iam.gserviceaccount.com"
+}
+
 #creates a dataform repository with a remote repository attached to it.
 module "dataform_with_external_repos" {
   for_each                   = var.create_dataform_repositories ? var.dataform_repositories : {}
@@ -71,7 +77,7 @@ resource "null_resource" "run_dataform_deployer" {
       source aef_dataform_execuor/bin/activate
       pip install google-api-core
       pip install google-cloud-dataform
-      python3 ../cicd-deployers/dataform_runner.py --project_id ${var.project} --location ${var.region} --repository ${each.key} --dataset defaultdataset --execute ${var.execute_dataform_repositories} --branch ${each.value.branch}
+      python3 ../cicd-deployers/dataform_runner.py --project_id ${var.project} --location ${var.region} --repository ${each.key} --tags ddl --execute ${var.execute_dataform_repositories} --branch ${each.value.branch}
     EOF
   }
   depends_on = [module.dataform_with_external_repos]

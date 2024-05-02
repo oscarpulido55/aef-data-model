@@ -106,9 +106,9 @@ module "vpc" {
   source     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/net-vpc"
   project_id = var.project
   name       = "fake-on-prem-network-for-sql"
-  psa_config = {
+  psa_configs = [{
     ranges = { cloud-sql = "10.60.0.0/16" }
-  }
+  }]
 }
 
 resource "google_sql_user" "user" {

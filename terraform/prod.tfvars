@@ -1,4 +1,4 @@
-project = "pso-amex-data-platform"
+project = "pso-amex-data-platform2"
 region  = "us-central1"
 domain  = "google"
 
@@ -23,9 +23,9 @@ dataform_repositories           = {
 create_data_buckets = false
 data_buckets        = {
   data-bucket-1 = {
-    name          = "pso-amex-data-platform-my-sample-data-bucket"
+    name          = "pso-amex-data-platform2-my-sample-data-bucket"
     region        = "us-central1"
-    project       = "pso-amex-data-platform"
+    project       = "pso-amex-data-platform2"
     dataplex_lake = "sales-lake"
     dataplex_zone = "landing-zone"
   }
@@ -35,13 +35,13 @@ create_ddl_buckets  = false
 run_ddls_in_buckets = true
 ddl_buckets         = {
   ddl-bucket-1 = {
-    bucket_name          = "pso-amex-data-platform-my-sample-ddl-bucket"
+    bucket_name          = "pso-amex-data-platform2-my-sample-ddl-bucket"
     bucket_region        = "us-central1"
-    bucket_project       = "pso-amex-data-platform"
+    bucket_project       = "pso-amex-data-platform2"
     ddl_flavor           = "bigquery"
-    ddl_project_id       = "pso-amex-data-platform"
+    ddl_project_id       = "pso-amex-data-platform2"
     ddl_dataset_id       = "landing_sample_dataset"
-    ddl_data_bucket_name = "pso-amex-data-platform-my-sample-data-bucket"
-    ddl_connection_name  = "projects/pso-amex-data-platform/locations/us-central1/connections/sample-connection"
+    ddl_data_bucket_name = "pso-amex-data-platform2-my-sample-data-bucket"
+    ddl_connection_name  = "projects/pso-amex-data-platform2/locations/us-central1/connections/sample-connection"
   }
 }

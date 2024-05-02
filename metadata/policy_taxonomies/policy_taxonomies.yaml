@@ -1,6 +1,6 @@
 project: {{ project_id_tgt }}
 taxonomies:
-  - display_name: "data_sensitivity"
+  - display_name: "aef_data_sensitivity"
     description: "pii data taxonomy"
     policy_tags:
       - display_name: "geolocation"
@@ -22,7 +22,7 @@ taxonomies:
           - display_name: "address"
             description: "physical address"
   # Another taxonomy.
-  - display_name: "data_origin"
+  - display_name: "aef_data_origin"
     description: "data origin taxonomy"
     policy_tags:
       - display_name: "user"
