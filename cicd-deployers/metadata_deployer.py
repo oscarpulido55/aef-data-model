@@ -22,7 +22,8 @@ def run_deploy_data_mesh(config_file, tag_template_directories, policy_directori
     if os.path.exists(src_code_path):
         shutil.rmtree(src_code_path)
         subprocess.run(["git", "rm", "-rf", "--cached", src_code_path], check=True)
-    subprocess.run(["git", "submodule", "add", "https://github.com/GoogleCloudPlatform/cortex-data-foundation.git",
+
+    subprocess.run(["git", "submodule", "add", "-f", "https://github.com/GoogleCloudPlatform/cortex-data-foundation.git",
                     src_code_path])
     command = [
         "python3",

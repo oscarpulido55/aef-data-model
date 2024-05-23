@@ -1,3 +1,0 @@
-[submodule "terraform/metadata/metadata-deployer/cortex_src_code"]
-	path = terraform/metadata/metadata-deployer/cortex_src_code
-	url = https://github.com/GoogleCloudPlatform/cortex-data-foundation.git
