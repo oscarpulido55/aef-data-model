@@ -64,7 +64,7 @@ Define your terraform variables.  We recommend creating a `.tfvars` file.
         name          = "your-data-bucket"
         region        = "us-central1"
         project       = "bucket-project-id"
-        dataplex_lake = "sales-lake"
+        dataplex_lake = "aef-sales-lake"
         dataplex_zone = "landing-zone"
       },
       ...

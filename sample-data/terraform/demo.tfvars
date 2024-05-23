@@ -2,11 +2,10 @@ project             = "pso-amex-data-platform2"
 region              = "us-central1"
 sample_default_date = "2024-02-26"
 
-git_token             = "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"
+git_token             = "***REMOVED***"
 dataform_repositories = {
   sample-repo-1 = {
     remote_repo_url      = "https://github.com/oscarpulido55/aef-sample-dataform-repo.git"
-    secret_name          = "my-github-token-secret-1"
   }
 }
 

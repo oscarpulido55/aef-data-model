@@ -8,15 +8,13 @@ create_dataform_repositories    = true
 compile_dataform_repositories   = true
 execute_dataform_repositories   = true
 create_dataform_datasets        = true
-dataform_repositories_git_token = "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"
+dataform_repositories_git_token = "***REMOVED***"
 dataform_repositories           = {
   sample-repo-1 = {
     remote_repo_url = "https://github.com/oscarpulido55/aef-sample-dataform-repo.git"
-    secret_name     = "my-github-token-secret-1"
   },
   sample-repo-2 = {
     remote_repo_url = "https://github.com/oscarpulido55/aef-sample-dataform-repo-2.git"
-    secret_name     = "my-github-token-secret-2"
   }
 }
 
@@ -26,7 +24,7 @@ data_buckets        = {
     name          = "pso-amex-data-platform2-my-sample-data-bucket"
     region        = "us-central1"
     project       = "pso-amex-data-platform2"
-    dataplex_lake = "sales-lake"
+    dataplex_lake = "aef-sales-lake"
     dataplex_zone = "landing-zone"
   }
 }
@@ -40,7 +38,7 @@ ddl_buckets         = {
     bucket_project       = "pso-amex-data-platform2"
     ddl_flavor           = "bigquery"
     ddl_project_id       = "pso-amex-data-platform2"
-    ddl_dataset_id       = "landing_sample_dataset"
+    ddl_dataset_id       = "aef_landing_sample_dataset"
     ddl_data_bucket_name = "pso-amex-data-platform2-my-sample-data-bucket"
     ddl_connection_name  = "projects/pso-amex-data-platform2/locations/us-central1/connections/sample-connection"
   }

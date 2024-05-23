@@ -20,6 +20,16 @@ locals {
     repo_key => "${local.repo_prefix[repo_key]}/${local.repo_name[repo_key]}"
   }
 
+  dataform_repositories = {
+    for repo_name, repo_config in var.dataform_repositories :
+    repo_name => merge(
+      repo_config,
+      {
+        secret_name = "${repo_name}_secret"
+      }
+    )
+  }
+
   #Reads dataform.json files
   dataform_configs = [
     for repo_key, repo_data in var.dataform_repositories :

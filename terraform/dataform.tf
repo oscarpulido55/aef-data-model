@@ -8,7 +8,7 @@ data "github_repository_file" "dataform_config" {
 
 #In order to enable dataform to communicate with a 3P GIT provider, an access token must be generated and stored as a secret on GCP
 module "secrets" {
-  for_each   = var.dataform_repositories
+  for_each   = local.dataform_repositories
   source     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/secret-manager"
   project_id = var.project
   secrets    = {
@@ -41,7 +41,7 @@ resource "google_project_iam_member" "dataform_bigquery_owner" {
 
 #creates a dataform repository with a remote repository attached to it.
 module "dataform_with_external_repos" {
-  for_each                   = var.create_dataform_repositories ? var.dataform_repositories : {}
+  for_each                   = var.create_dataform_repositories ? local.dataform_repositories : {}
   source                     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/dataform-repository"
   project_id                 = var.project
   name                       = each.key
@@ -50,7 +50,7 @@ module "dataform_with_external_repos" {
     url            = each.value.remote_repo_url
     branch         = each.value.branch
     secret_name    = each.value.secret_name
-    secret_version = module.secrets[each.key].version_ids["${var.dataform_repositories[each.key].secret_name}:${var.dataform_repositories[each.key].secret_version}"]
+    secret_version = module.secrets[each.key].version_ids["${local.dataform_repositories[each.key].secret_name}:${local.dataform_repositories[each.key].secret_version}"]
   }
 }
 
@@ -70,7 +70,7 @@ resource "google_bigquery_dataset" "datasets" {
 
 #Run the dataform scripts found in the repositories
 resource "null_resource" "run_dataform_deployer" {
-  for_each = var.compile_dataform_repositories ? var.dataform_repositories : {}
+  for_each = var.compile_dataform_repositories ? local.dataform_repositories : {}
   provisioner "local-exec" {
     command = <<EOF
       python3 -m venv aef_dataform_execuor

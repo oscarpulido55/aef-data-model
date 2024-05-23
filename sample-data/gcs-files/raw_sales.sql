@@ -1,5 +1,5 @@
 CREATE OR REPLACE EXTERNAL TABLE
-  `${PROJECT_ID}.${DATASET_ID}`.sales ( location_id STRING,
+  `${PROJECT_ID}.${DATASET_ID}`.raw_sales ( location_id STRING,
     product_id STRING,
     sales_value INTEGER,
     sales_cost INTEGER)

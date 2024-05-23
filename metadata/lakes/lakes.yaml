@@ -1,6 +1,6 @@
 project: {{ project_id_tgt }}
 lakes:
-  - display_name: "sales-lake"
+  - display_name: "aef-sales-lake"
     region: "us-central1"
     description: "lake for the Sales domain"
     labels:

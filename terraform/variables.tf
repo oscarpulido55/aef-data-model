@@ -66,7 +66,6 @@ variable "dataform_repositories" {
   type        = map(object({
     remote_repo_url = optional(string)
     branch          = optional(string, "main")
-    secret_name     = optional(string)
     secret_version  = optional(string, "v1")
   }))
   default = {}
