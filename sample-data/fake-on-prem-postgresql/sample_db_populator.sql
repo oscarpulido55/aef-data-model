@@ -1,6 +1,6 @@
-CREATE TABLE products (
-    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+CREATE TABLE suppliers (
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
-INSERT INTO products (name) VALUES ('product1');
-INSERT INTO products (name) VALUES ('product2');
+INSERT INTO suppliers (name) VALUES ('supplier1');
+INSERT INTO suppliers (name) VALUES ('supplier2');

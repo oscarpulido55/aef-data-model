@@ -1,0 +1,3 @@
+CREATE OR REPLACE TABLE
+  `${PROJECT_ID}.${DATASET_ID}`.raw_suppliers ( id INTEGER,
+    name STRING)

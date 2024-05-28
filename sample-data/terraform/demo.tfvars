@@ -10,6 +10,7 @@ dataform_repositories = {
 }
 
 sample_data_bucket  = "pso-amex-data-platform2-my-sample-data-bucket"
+temp_data_bucket = "aef-pso-amex-data-platform2-temp"
 sample_data_files = {
   "location" = {
     name   = "locations/location.csv"
@@ -31,8 +32,12 @@ sample_data_files = {
 
 sample_ddl_bucket  = "pso-amex-data-platform2-my-sample-ddl-bucket"
 sample_ddl_files = {
-  "location" = {
+  "sales" = {
     name   = "raw_sales.sql"
     source = "../gcs-files/raw_sales.sql"
+  },
+  "suppliers" = {
+    name   = "raw_suppliers.sql"
+    source = "../gcs-files/raw_suppliers.sql"
   }
 }

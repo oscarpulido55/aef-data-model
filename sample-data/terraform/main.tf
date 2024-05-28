@@ -32,6 +32,15 @@ resource "google_storage_bucket" "sample_data_bucket" {
   force_destroy            = true
 }
 
+# Create temp storage bucket.
+resource "google_storage_bucket" "temp_data_bucket" {
+  name                     = var.temp_data_bucket
+  location                 = var.region
+  project                  = var.project
+  public_access_prevention = "enforced"
+  force_destroy            = true
+}
+
 # Create sample DDLs bucket.
 resource "google_storage_bucket" "sample_ddl_bucket" {
   name                     = var.sample_ddl_bucket

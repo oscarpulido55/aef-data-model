@@ -51,6 +51,13 @@ variable "sample_data_bucket" {
   type        = string
 }
 
+variable "temp_data_bucket" {
+  nullable    = true
+  default     = null
+  description = "Bucket where sample data will be stored."
+  type        = string
+}
+
 variable "sample_data_files" {
   nullable = true
   default  = null
