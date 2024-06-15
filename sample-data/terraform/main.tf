@@ -96,7 +96,7 @@ module "fake_on_prem_instance" {
   project_id     = var.project
   network_config = {
     connectivity = {
-      public_ipv4 = true
+      public_ipv4 = false
       psa_config  = {
         private_network = module.vpc.self_link
       }
@@ -118,6 +118,13 @@ module "vpc" {
   psa_configs = [{
     ranges = { cloud-sql = "10.60.0.0/16" }
   }]
+  subnets = [
+    {
+      name          = "default-${var.region}"
+      region        = var.region
+      ip_cidr_range = "10.0.0.0/24"
+    }
+  ]
 }
 
 resource "google_sql_user" "user" {

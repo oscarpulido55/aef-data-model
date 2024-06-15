@@ -1,3 +1,4 @@
+import logging
 import subprocess
 import os
 import shutil
@@ -34,7 +35,7 @@ def run_deploy_data_mesh(config_file, tag_template_directories, policy_directori
         "--lake-directories", lake_directories,
         "--annotation-directories", annotation_directories
     ]
-    if overwrite:
+    if overwrite != "false":
         command.append("--overwrite")
 
     requirements_path = "metadata/metadata-deployer/cortex_src_code/requirements.in"
@@ -114,9 +115,14 @@ def main(args: collections.abc.Sequence[str]) -> int:
                         type=str,
                         required=True,
                         help="Location where metadata (lakes, zones, tags, etc.) will be deployed.")
+    parser.add_argument("--overwrite",
+                        type=str,
+                        required=True,
+                        help="Whether to overwrite existing metadata")
     params = parser.parse_args(args)
     project_id = str(params.project_id)
     location = str(params.location)
+    overwrite = str(params.overwrite)
 
     run_deploy_data_mesh(
         config_file=write_json_file(project_id, location),
@@ -124,7 +130,7 @@ def main(args: collections.abc.Sequence[str]) -> int:
         policy_directories="../metadata/policy_taxonomies",
         lake_directories="../metadata/lakes",
         annotation_directories="../metadata/annotations",
-        overwrite=True
+        overwrite=overwrite
     )
 
 if __name__ == "__main__":

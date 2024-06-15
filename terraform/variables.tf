@@ -19,6 +19,13 @@ variable "include_metadata_in_tfe_deployment" {
   nullable    = false
 }
 
+variable "overwrite_metadata" {
+  description = "Whether to overwrite existing Dataplex (Cortex Datamesh) metadata."
+  type        = string
+  nullable    = false
+  default = false
+}
+
 variable "create_dataform_datasets" {
   description = "Controls whether the datasets found in the dataform.json files in the repositories will be created alongside Terraform resources. If false datasets should be created manually or as an additional step in the CICD pipeline."
   type        = bool
@@ -92,6 +99,7 @@ variable "data_buckets" {
     project       = optional(string)
     dataplex_lake = optional(string)
     dataplex_zone = optional(string)
+    auto_discovery_of_tables = optional(string)
   }))
   default = {}
 }

@@ -1,4 +1,4 @@
-project             = "pso-amex-data-platform2"
+project             = "analytics-engg-framework-demo"
 region              = "us-central1"
 sample_default_date = "2024-02-26"
 
@@ -9,8 +9,8 @@ dataform_repositories = {
   }
 }
 
-sample_data_bucket  = "pso-amex-data-platform2-my-sample-data-bucket"
-temp_data_bucket = "aef-pso-amex-data-platform2-temp"
+sample_data_bucket  = "analytics-engg-framework-demo-my-sample-data-bucket"
+temp_data_bucket = "aef-analytics-engg-framework-demo-temp"
 sample_data_files = {
   "location" = {
     name   = "locations/location.csv"
@@ -30,7 +30,7 @@ sample_data_files = {
   }
 }
 
-sample_ddl_bucket  = "pso-amex-data-platform2-my-sample-ddl-bucket"
+sample_ddl_bucket  = "analytics-engg-framework-demo-my-sample-ddl-bucket"
 sample_ddl_files = {
   "sales" = {
     name   = "raw_sales.sql"

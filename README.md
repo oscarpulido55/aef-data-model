@@ -1,5 +1,14 @@
 # Analytics Engineering Framework - Data Model
-[Analytics engineers](https://www.getdbt.com/what-is-analytics-engineering) transform, test, deploy, and document data using software engineering principles, providing clean datasets that empower end-users to independently answer their own questions.
+[Analytics engineers](https://www.getdbt.com/what-is-analytics-engineering) lay the foundation for others to organize, transform, and document data using software engineering principles. Providing easy to use data platforms that empower data practitioners to independently build data pipelines in a standardized and scalable way, and answer their own data-driven questions.
+
+This repository is designed for managing your data models (BigQuery, BigLake, etc.) and deploying them from various sources (SQL files, Dataform repositories, etc.). Additionally, it facilitates defining and deploying Dataplex metadata (lakes, zones, assets, annotations, policy tags, etc.). 
+
+While usable independently, this tool is optimized as a component within a comprehensive Analytics Engineering Framework comprising:
+
+1. **Orchestration Framework**: Maintained by Analytics Engineers to provide seamless, extensible orchestration and execution infrastructure.
+1. **(This repository) Data Model**: Directly used by end data practitioners to manage data models, schemas, and Dataplex metadata.
+1. **Data Orchestration**: Directly used by end data practitioners to define and deploy data pipelines using levels, threads, and steps.
+1. **Data Transformation**: Directly used by end data practitioners to define, store, and deploy data transformations.
 
 ### Concepts
 This reference Data Model management repository is your central hub for streamlined data model definition. It deploys dataform repositories and integrates with BigQuery metadata and [Dataplex](https://cloud.google.com/dataplex) to enable data governance, discoverability, and access control. Here's what it offers:
@@ -13,8 +22,29 @@ This reference Data Model management repository is your central hub for streamli
 ![data_model&metadata_trategy.png](data_model&metadata_trategy.png)
 
 ## Usage
-While this repository can be used to keep track of your data model and metadata, the provided terraform code can be used to control deployment or just to reference it, so you can deploy it as another step in your CI/CD pipeline. 
-### 1. Terraform:
+
+### 1. Dataplex:
+   - Familiarize yourself with [this](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#concepts) concepts.
+   - Define metadata in the following `.yaml` files:
+     - [Asset Annotations](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#asset-annotations)
+     - [Dataplex Lakes, Zones, and Assets](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#dataplex-lakes-zones-and-assets)
+     - [Policy Taxonomies and Tags](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#policy-taxonomies-and-tags)
+     - [Data Catalog Tag Templates](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#catalog-tag-templates)
+```
+└── metadata
+│   ├── annotations
+│   │   └── annotations.yaml
+│   ├── lakes
+│   │   └── lakes.yaml
+│   ├── policy_taxonomies
+│   │   └── policy_taxonomies.yaml
+│   └── tag_templates
+│       └── tag_templates.yaml
+```
+
+### 2. Terraform:
+While this repository can be used to keep track of your data model and metadata, the provided terraform code can be used to control deployment or just to reference it, so you can deploy it as another step in your CI/CD pipeline.
+
 Define your terraform variables.  We recommend creating a `.tfvars` file.
 <!-- BEGIN TFDTFOC -->
 | name                                       | description                                                                                                                                                                                                   | type                                               | required | default |
@@ -82,39 +112,12 @@ Define your terraform variables.  We recommend creating a `.tfvars` file.
         ddl_dataset_id       = "ddls-dataset-id-if-any"
         ddl_data_bucket_name = "ddls-bucket-name-if-any"
         ddl_connection_name  = "projects/connection-project/locations/us-central1/connections/ddls-connection-name-if-any"
-      }
+      }, 
+      ...
     }
 ```
 
-### 2. Dataplex:
-   - Familiarize yourself with [this](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#concepts) concepts.
-   - Define metadata in the following `.yaml` files:
-     - [Asset Annotations](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#asset-annotations)
-     - [Dataplex Lakes, Zones, and Assets](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#dataplex-lakes-zones-and-assets)
-     - [Policy Taxonomies and Tags](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#policy-taxonomies-and-tags)
-     - [Data Catalog Tag Templates](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#catalog-tag-templates)
-```
-└── metadata
-│   ├── annotations
-│   │   └── annotations.yaml
-│   ├── lakes
-│   │   └── lakes.yaml
-│   ├── policy_taxonomies
-│   │   └── policy_taxonomies.yaml
-│   └── tag_templates
-│       └── tag_templates.yaml
-```
-
-### 3. Run the Terraform Plan / Apply using the variables you define in the first step.
+#### Run Terraform Plan / Apply using the variables you defined.
 ```bash
 terraform plan -var-file="my-vars.tfvars"
 ```
-
-## Integration with the Analytics Engineering Framework
-
-This opinionated Data Model management repository is designed as a component of a comprehensive Analytics Engineering Framework comprised of:
-
-1. Analytics Engineering Framework - Data Orchestration: Automates the generation of Google Cloud Workflows Definition files.
-1. Analytics Engineering Framework - Orchestration Framework: Seamlessly deploy your orchestration infrastructure.
-1. Analytics Engineering Framework - Data Transformation: Houses your data transformation logic.
-1. Analytics Engineering Framework - Data Model: Manages data models, schemas and Dataplex lakes and zones.

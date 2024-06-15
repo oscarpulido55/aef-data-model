@@ -6,6 +6,19 @@ data "github_repository_file" "dataform_config" {
   file       = "dataform.json"
 }
 
+module "aef-dataform-service-account" {
+  source            = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/iam-service-account"
+  project_id        = var.project
+  name              = "aef-dataform-service-account"
+  iam_project_roles = {
+    "${var.project}" = [
+      "roles/dataform.serviceAgent",
+      "roles/iam.serviceAccountTokenCreator",
+      "roles/bigquery.admin"
+    ]
+  }
+}
+
 #In order to enable dataform to communicate with a 3P GIT provider, an access token must be generated and stored as a secret on GCP
 module "secrets" {
   for_each   = local.dataform_repositories
@@ -26,17 +39,20 @@ module "secrets" {
   iam = {
     "${each.value.secret_name}" = {
       "roles/secretmanager.secretAccessor" = [
-        "serviceAccount:service-${data.google_project.project.number}@gcp-sa-dataform.iam.gserviceaccount.com"
-        #module.dataform-service-accounts[each.key].iam_email
+        "serviceAccount:service-${data.google_project.project.number}@gcp-sa-dataform.iam.gserviceaccount.com",
+        module.aef-dataform-service-account.iam_email
       ]
     }
   }
 }
 
-resource "google_project_iam_member" "dataform_bigquery_owner" {
+resource "google_project_iam_member" "dataform_permissions" {
   project = var.project
-  role    = "roles/bigquery.admin"
+  role    = "roles/iam.serviceAccountTokenCreator"
+  #default Service Agent needs permission to impersonate our custom Dataform SA
   member  = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-dataform.iam.gserviceaccount.com"
+  #member  = module.aef-dataform-service-account.iam_email
+  depends_on = [module.dataform_with_external_repos, module.secrets]
 }
 
 #creates a dataform repository with a remote repository attached to it.
@@ -46,11 +62,12 @@ module "dataform_with_external_repos" {
   project_id                 = var.project
   name                       = each.key
   region                     = var.region
+  service_account = module.aef-dataform-service-account.email
   remote_repository_settings = {
-    url            = each.value.remote_repo_url
-    branch         = each.value.branch
-    secret_name    = each.value.secret_name
-    secret_version = module.secrets[each.key].version_ids["${local.dataform_repositories[each.key].secret_name}:${local.dataform_repositories[each.key].secret_version}"]
+    url             = each.value.remote_repo_url
+    branch          = each.value.branch
+    secret_name     = each.value.secret_name
+    secret_version  = module.secrets[each.key].version_ids["${local.dataform_repositories[each.key].secret_name}:${local.dataform_repositories[each.key].secret_version}"]
   }
 }
 
@@ -77,10 +94,11 @@ resource "null_resource" "run_dataform_deployer" {
       source aef_dataform_execuor/bin/activate
       pip install google-api-core
       pip install google-cloud-dataform
-      python3 ../cicd-deployers/dataform_runner.py --project_id ${var.project} --location ${var.region} --repository ${each.key} --tags ddl --execute ${var.execute_dataform_repositories} --branch ${each.value.branch}
+      pip install google-cloud-asset
+      python3 ../cicd-deployers/dataform_runner.py --project_id ${var.project} --project_number ${data.google_project.project.number} --location ${var.region} --repository ${each.key} --tags ddl --execute ${var.execute_dataform_repositories} --branch ${each.value.branch}
     EOF
   }
-  depends_on = [module.dataform_with_external_repos]
+  depends_on = [google_project_iam_member.dataform_permissions, module.dataform_with_external_repos, null_resource.run_metadata_deployer]
   triggers   = {
     always_run = timestamp()
   }

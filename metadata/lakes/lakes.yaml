@@ -7,18 +7,18 @@ lakes:
       - name: "lake_label"
         value: "l1"
     zones:
-      - display_name: "landing-zone"
+      - display_name: "aef-landing-sample-zone"
         description: "Sample Landing Zone"
         zone_type: RAW
         location_type: SINGLE_REGION
         labels:
           - name: "zone_label"
             value: "l2"
-      - display_name: "curated-zone"
+      - display_name: "aef-curated-sample-zone"
         description: "Sample Curated Zone"
         zone_type: CURATED
         location_type: SINGLE_REGION
-      - display_name: "exposure-zone"
+      - display_name: "aef-exposure-sample-zone"
         description: "Sample Exposure Zone"
         zone_type: CURATED
         location_type: SINGLE_REGION

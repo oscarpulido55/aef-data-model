@@ -4,8 +4,10 @@ import argparse
 import collections
 import sys
 from google.cloud import dataform_v1beta1
-
+from google.cloud import asset_v1
 df_client = dataform_v1beta1.DataformClient()
+iam_client = asset_v1.AssetServiceClient()
+
 
 def execute_workflow(repo_uri: str, compilation_result: str, tags: list):
     """Triggers a Dataform workflow execution based on a provided compilation result.
@@ -32,6 +34,7 @@ def execute_workflow(repo_uri: str, compilation_result: str, tags: list):
     logging.info(f'created workflow invocation {name}')
     return name
 
+
 def compile_workflow(repo_uri: str, branch: str):
     """Compiles a Dataform workflow using a specified Git branch.
 
@@ -55,41 +58,108 @@ def compile_workflow(repo_uri: str, branch: str):
     logging.info(f'compiled workflow {name}')
     return name
 
+
 def get_workflow_state(workflow_invocation_id: str):
     """Monitors the status of a Dataform workflow invocation.
 
     Args:
         workflow_invocation_id (str): The ID of the workflow invocation.
     """
-    while True:
-        request = dataform_v1beta1.GetWorkflowInvocationRequest(
-            name=workflow_invocation_id
-        )
-        response = df_client.get_workflow_invocation(request)
-        state = response.state.name
-        logging.info(f'workflow state: {state}')
-        if state == 'RUNNING':
-            time.sleep(10)
-        elif state in ('FAILED', 'CANCELING', 'CANCELLED'):
-            raise Exception(f'Error while running workflow {workflow_invocation_id}')
-        elif state == 'SUCCEEDED':
-            return
+    request = dataform_v1beta1.GetWorkflowInvocationRequest(
+        name=workflow_invocation_id
+    )
+    response = df_client.get_workflow_invocation(request)
+    state = response.state.name
+    logging.info(f'workflow state: {state}')
+    if state == 'RUNNING':
+        time.sleep(10)
+    elif state in ('FAILED', 'CANCELING', 'CANCELLED'):
+        raise Exception(f'Error while running workflow {workflow_invocation_id}')
+    elif state == 'SUCCEEDED':
+        return
 
-def run_workflow(gcp_project: str, location: str, repo_name: str, tags: list, execute: str, branch: str):
+
+def run_workflow(gcp_project: str, project_num: str, location: str, repo_name: str, tags: list, execute: str,
+                 branch: str):
     """Orchestrates the complete Dataform workflow process: compilation and execution.
 
     Args:
         gcp_project (str): The GCP project ID.
+        project_num (str): The GCP project Number.
         location (str): The GCP region.
         repo_name (str): The name of the Dataform repository.
         tag (str): The target tags to compile and execute.
         branch (str): The Git branch to use.
     """
+    max_retries = 3
+    retry_count = 0
+    role_to_validate = "roles/iam.serviceAccountTokenCreator"
+
     repo_uri = f'projects/{gcp_project}/locations/{location}/repositories/{repo_name}'
     compilation_result = compile_workflow(repo_uri, branch)
     if execute:
         workflow_invocation_name = execute_workflow(repo_uri, compilation_result, tags)
         get_workflow_state(workflow_invocation_name)
+
+#TODO first deployment it takes time for the Dataform requiered SA to came up
+"""
+    while retry_count < max_retries:
+        try:
+            if validate_service_account(gcp_project, f"service-{project_num}@gcp-sa-dataform.iam.gserviceaccount.com",role_to_validate):
+                repo_uri = f'projects/{gcp_project}/locations/{location}/repositories/{repo_name}'
+                compilation_result = compile_workflow(repo_uri, branch)
+                if execute:
+                    workflow_invocation_name = execute_workflow(repo_uri, compilation_result, tags)
+                    get_workflow_state(workflow_invocation_name)
+                    break
+            else:
+                print(f"Default Dataform Service Agent do not have {role_to_validate} role yet, retrying..")
+                time.sleep(10)
+                retry_count += 1
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            break
+    if retry_count == max_retries:
+        print(f"Default Dataform Service Agent do not have {role_to_validate} role. Failed Dataform Creator.")
+"""
+
+def validate_service_account(project_id, service_account_email, required_role):
+    """
+    Validates if a Google Cloud service account exists and has a specified role.
+
+    Args:
+        project_id: The ID of the Google Cloud project.
+        service_account_email: The email address of the service account.
+        required_role: The role the service account should have (e.g., "roles/storage.objectAdmin").
+
+    Returns:
+        True if the service account exists and has the role, False otherwise.
+    """
+
+    # Construct the service account resource name
+    resource_name = f"//iam.googleapis.com/projects/{project_id}/serviceAccounts/{service_account_email}"
+
+    # Analyze IAM policy for the service account
+    response = iam_client.analyze_iam_policy(
+        request={
+            "analysis_query": {
+                "scope": f"projects/{project_id}",
+                "resource_selector": {"full_resource_name": resource_name},
+                "identity_selector": {"identity": f"serviceAccount:{service_account_email}"}
+            }
+        }
+    )
+
+    # Check if the required role is in the policy bindings
+    for binding in response.main_analysis.analysis_results[0].iam_binding.bindings:
+        if required_role in binding.role:
+            return True
+
+    return False
+
+    print(
+        f"Service account {service_account_email} does not have the role {required_role} in project {project_id}.")
+    return False
 
 def main(args: collections.abc.Sequence[str]) -> int:
     """The main function parses command-line arguments and calls the run_workflow function to execute the complete Dataform workflow.
@@ -98,13 +168,14 @@ def main(args: collections.abc.Sequence[str]) -> int:
     """
     parser = argparse.ArgumentParser(description="Dataform Workflows runner")
 
-
-
-
     parser.add_argument("--project_id",
                         type=str,
                         required=True,
                         help="The GCP project ID where the Dataform code will be deployed.")
+    parser.add_argument("--project_number",
+                        type=str,
+                        required=True,
+                        help="The GCP project Number where the Dataform code will be deployed.")
     parser.add_argument("--location",
                         type=str,
                         required=True,
@@ -128,6 +199,7 @@ def main(args: collections.abc.Sequence[str]) -> int:
                         help="The branch of the Dataform repository to use.")
     params = parser.parse_args(args)
     project_id = str(params.project_id)
+    project_number = str(params.project_number)
     location = str(params.location)
     repository = str(params.repository)
     execute = str(params.execute)
@@ -135,6 +207,7 @@ def main(args: collections.abc.Sequence[str]) -> int:
     branch = str(params.branch)
 
     run_workflow(gcp_project=project_id,
+                 project_num=project_number,
                  location=location,
                  repo_name=repository,
                  tags=tags,

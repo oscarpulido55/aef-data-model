@@ -14,4 +14,5 @@ resource "null_resource" "run_ddls" {
   triggers   = {
     always_run = timestamp()
   }
+  depends_on = [null_resource.run_metadata_deployer]
 }
