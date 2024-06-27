@@ -95,7 +95,7 @@ module "fake_on_prem_instance" {
   project_id     = var.project
   network_config = {
     connectivity = {
-      public_ipv4 = false
+      public_ipv4 = true
       psa_config  = {
         private_network = module.vpc.self_link
       }
