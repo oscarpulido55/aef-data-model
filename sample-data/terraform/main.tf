@@ -25,27 +25,26 @@ data "google_project" "project" {
 
 # Create sample storage bucket.
 resource "google_storage_bucket" "sample_data_bucket" {
-  name                     = var.sample_data_bucket
-  location                 = var.region
-  project                  = var.project
+  name                     = "${var.sample_data_bucket_project}-my-sample-data-bucket"
+  location                 = var.sample_data_bucket_region
+  project                  = var.sample_data_bucket_project
   public_access_prevention = "enforced"
   force_destroy            = true
 }
 
 # Create temp storage bucket.
 resource "google_storage_bucket" "temp_data_bucket" {
-  name                     = var.temp_data_bucket
-  location                 = var.region
-  project                  = var.project
+  name                     = "${var.temp_data_bucket_project}-temp"
+  location                 = var.temp_data_bucket_region
+  project                  = var.temp_data_bucket_project
   public_access_prevention = "enforced"
   force_destroy            = true
 }
 
-# Create sample DDLs bucket.
 resource "google_storage_bucket" "sample_ddl_bucket" {
-  name                     = var.sample_ddl_bucket
-  location                 = var.region
-  project                  = var.project
+  name                     = "${var.sample_ddl_bucket_project}-my-sample-ddl-bucket"
+  location                 = var.sample_ddl_bucket_region
+  project                  = var.sample_ddl_bucket_project
   public_access_prevention = "enforced"
   force_destroy            = true
 }

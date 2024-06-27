@@ -44,20 +44,6 @@ variable "git_token" {
   sensitive   = true
 }
 
-variable "sample_data_bucket" {
-  nullable    = true
-  default     = null
-  description = "Bucket where sample data will be stored."
-  type        = string
-}
-
-variable "temp_data_bucket" {
-  nullable    = true
-  default     = null
-  description = "Bucket where sample temp data will be stored."
-  type        = string
-}
-
 variable "sample_data_files" {
   nullable = true
   default  = null
@@ -68,11 +54,16 @@ variable "sample_data_files" {
   description = "A map where values are objects containing 'source' (path to the file)"
 }
 
-variable "sample_ddl_bucket" {
-  nullable    = true
-  default     = null
-  description = "Bucket where sample DDLs will be stored."
-  type        = string
+variable "sample_ddl_bucket_project" {
+  nullable = true
+  type     = string
+  description = "A region where a sample ddl bucket will be created."
+}
+
+variable "sample_ddl_bucket_region" {
+  nullable = true
+  type     = string
+  description = "A region where a sample ddl bucket will be created."
 }
 
 variable "sample_ddl_files" {
@@ -97,3 +88,26 @@ variable "sample_connection_region" {
   description = "A region where a sample connection will be created. (Could be referenced in Dataform repositories)"
 }
 
+variable "sample_data_bucket_project" {
+  nullable = true
+  type     = string
+  description = "A project where a sample data bucket will be created."
+}
+
+variable "sample_data_bucket_region" {
+  nullable = true
+  type     = string
+  description = "A region where a sample data bucket will be created."
+}
+
+variable "temp_data_bucket_project" {
+  nullable = true
+  type     = string
+  description = "A project where a sample temp bucket will be created."
+}
+
+variable "temp_data_bucket_region" {
+  nullable = true
+  type     = string
+  description = "A region where a sample temp bucket will be created."
+}
