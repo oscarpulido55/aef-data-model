@@ -72,14 +72,14 @@ resource "google_storage_bucket_object" "ddl_files" {
 resource "google_bigquery_connection" "connection" {
   #connection_id = local.connections["connection_name"]["connection"]
   connection_id = "sample-connection"
-  project       = var.project
-  location      = var.region
+  project       = var.sample_connection_project
+  location      = var.sample_connection_region
   cloud_resource {}
 }
 
 # Grants permissions to the service account of the connection created in the last step.
 resource "google_project_iam_member" "connectionPermissionGrant" {
-  project = var.project
+  project = var.sample_connection_project
   role    = "roles/storage.objectViewer"
   member  = format("serviceAccount:%s", google_bigquery_connection.connection.cloud_resource[0].service_account_id)
 }

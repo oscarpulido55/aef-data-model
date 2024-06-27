@@ -30,22 +30,26 @@ Use this in case you want to create some sample data sources (GCS bucket with so
       },
       ...
     }
+    sample_connection_project = "analytics-engg-framework-demo"
+    sample_connection_region = "us-central1"
     ```
 <!-- BEGIN TFDTFOC -->
 ## Variables
 
-| name                                      | description                                                                                                                           | type | required | default |
-|-------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|---|---|---|
-| [project](variables.tf#L17)               | Project where the core BigLake bigquery_connection and other resources will be created.                                               | string | true | - | 
-| [region](variables.tf#L23)                | Region where the core BigLake bigquery_connection and other resources will be created.                                                | string | true | - |
-| [dataform_repositories](variables.tf#L29) | Dataform repository remote settings required to attach the repository to a remote repository.                                         | map(object({ <br> &emsp;remote_repo_url = optional(string), <br> &emsp;branch = optional(string, "main"), <br> &emsp;secret_name = optional(string), <br> &emsp;secret_version = optional(string, "v1"), <br> &emsp;service_account_name = optional(string) <br> })) | false | {} |
-| [git_token](variables.tf#L41)             | Git token to access the dataform repositories, it will be used to connect and read the dataform.json to create the BigLake connection | string | true | - |
-| [sample_data_bucket](variables.tf#L48)    | Bucket where sample data will be stored.                                                                                              | string | false | null |
-| [sample_files](variables.tf#L55)          | A map where values are objects containing 'source' (path to the file) and optional 'content'.                                         | map(object({ <br> &emsp;name = string, <br> &emsp;source = string <br> }))  | false | null |
-| [sample_default_date](variables.tf#L65)   | A default processing date, that will be used as filter for data ingestions.                                                           | string | false | null |
+| name                                         | description                                                                                                                           | type | required | default |
+|----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|---|---|---|
+| [project](variables.tf#L17)                  | Project where the core BigLake bigquery_connection and other resources will be created.                                               | string | true | - | 
+| [region](variables.tf#L23)                   | Region where the core BigLake bigquery_connection and other resources will be created.                                                | string | true | - |
+| [dataform_repositories](variables.tf#L29)    | Dataform repository remote settings required to attach the repository to a remote repository.                                         | map(object({ <br> &emsp;remote_repo_url = optional(string), <br> &emsp;branch = optional(string, "main"), <br> &emsp;secret_name = optional(string), <br> &emsp;secret_version = optional(string, "v1"), <br> &emsp;service_account_name = optional(string) <br> })) | false | {} |
+| [git_token](variables.tf#L40)                | Git token to access the dataform repositories, it will be used to connect and read the dataform.json to create the BigLake connection | string | true | - |
+| [sample_data_bucket](variables.tf#L47)       | Bucket where sample data will be stored.                                                                                              | string | false | null |
+| [temp_data_bucket](variables.tf#L54)         | Bucket where sample temp data will be stored.                                                                                         | string | false | null |
+| [sample_data_files](variables.tf#L61)        | A map where values are objects containing 'source' (path to the file)                                                                 | map(object({ <br> &emsp;name = string, <br> &emsp;source = string <br> }))  | false | null |
+| [sample_ddl_bucket](variables.tf#L70)        | Bucket where sample DDLs will be stored.                                                                                              | string | false | null |
+| [sample_ddl_files](variables.tf#L77)         | A map where values are objects containing 'source' (path to the file)                                                                 | map(object({ <br> &emsp;name = string, <br> &emsp;source = string <br> }))  | false | null |
+| [sample_connection_project](variables.tf#L86) | A project where a sample connection will be created. (Could be referenced in Dataform repositories).                                 | string | false | null |
+| [sample_connection_region](variables.tf#L91)  | A region where a sample connection will be created. (Could be referenced in Dataform repositories)                                 | string | false | null |
 <!-- END TFDOC -->
-
-
 
 1. Run the Terraformn Plan / Apply
 ```commandline
