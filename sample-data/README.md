@@ -30,7 +30,7 @@ Use this in case you want to create some sample data sources (GCS bucket with so
       },
       ...
     }
-    sample_connection_project = "<PROJECT_ID>"
+    sample_connection_project = "<PROJECT>"
     sample_connection_region = "us-central1"
     ```
 <!-- BEGIN TFDTFOC -->
