@@ -39,6 +39,6 @@ fast/**/[0-9]*.auto.tfvars*
 **/node_modules
 env/
 terraform/aef_bigquery_ddl_runner/*
-terraform/aef_dataform_execuor/*
+terraform/aef_dataform_executor/*
 terraform/aef_metadata_deployer/*
 terraform/metadata/*
