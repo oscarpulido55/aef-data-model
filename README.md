@@ -22,7 +22,7 @@ This reference Data Model management repository is your central hub for streamli
   - Creates or references GCS buckets containing DDLs.
   - Creates or references GCS data buckets.
   - Creates Dataplex lakes and zones and register data assets (GCS buckets or BigQuery Datasets) accordingly based on given parameters.
-  - Defines tag templates, policy taxonomies, governance rules and annotations to be applied to data assets based on given [parameter files](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#understanding-the-base-resource-specs).
+  - Defines tag templates, policy taxonomies, governance rules and annotations to be applied to data assets based on given [parameter files](https://cloud.google.com/cortex/docs/datamesh#metadata_resources).
 
 ![data_model&metadata_trategy.png](data_model&metadata_trategy.png)
 
@@ -45,12 +45,12 @@ If you decide to use this repository to create datasets referenced in your Dataf
 ## Usage
 
 ### 1. Dataplex:
-   - Familiarize yourself with [this](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#concepts) concepts.
+   - Familiarize yourself with [this](https://cloud.google.com/cortex/docs/datamesh-concepts) concepts.
    - Define metadata in the following `.yaml` files:
-     - [Asset Annotations](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#asset-annotations)
-     - [Dataplex Lakes, Zones, and Assets](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#dataplex-lakes-zones-and-assets)
-     - [Policy Taxonomies and Tags](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#policy-taxonomies-and-tags)
-     - [Data Catalog Tag Templates](https://github.com/GoogleCloudPlatform/cortex-data-foundation/tree/main/docs/data_mesh#catalog-tag-templates)
+     - [Asset Annotations](https://cloud.google.com/cortex/docs/datamesh#asset_annotations)
+     - Dataplex [Lakes](https://cloud.google.com/cortex/docs/datamesh#Dataplex-Lakes), Zones, and Assets
+     - [Policy Taxonomies and Tags](https://cloud.google.com/cortex/docs/datamesh#policy_taxonomies_and_tags)
+     - [Data Catalog Tag Templates](https://cloud.google.com/cortex/docs/datamesh#catalog_tag_templates)
 ```
 └── metadata
 │   ├── annotations
