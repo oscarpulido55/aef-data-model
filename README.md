@@ -63,33 +63,33 @@ While this repository can be used to keep track of your data model and metadata,
 
 Define your terraform variables.  It is recommended creating a `.tfvars` file.
 <!-- BEGIN TFDTFOC -->
-| name                                              | description                                                                                                                                                                                                                                                           | type                                               | required | default |
-|---------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------|----------|---------|
-| [include_metadata_in_tfe_deployment](terraform/variables.tf#L4) | Controls whether metadata is deployed alongside Terraform resources. If false Metadata can be deployed as a next step in a CICD pipeline.                                                                                                                               | bool                                                   | false    | -       |
-| [overwrite_metadata](terraform/variables.tf#L8)             | Whether to overwrite existing Dataplex (Cortex Datamesh) metadata.                                                                                                                                                                                                    | string                                                 | true     | false    |
-| [create_dataform_datasets](terraform/variables.tf#L13)       | Controls whether the datasets found in the dataform.json files in the repositories will be created alongside Terraform resources. If false datasets should be created otherwise.                                                                                          | bool                                                   | false    | -       |
-| [create_ddl_buckets_datasets](terraform/variables.tf#L18)    | Controls whether the datasets referenced in the GCS DDL buckets will be created alongside Terraform resources. If false datasets should be created otherwise.                                                                                                           | bool                                                   | false    | -       |
-| [create_dataform_repositories](terraform/variables.tf#L23)  | Controls whether the dataform scripts found in the repositories will be created alongside Terraform resources. If false dataform repositories should be created as an additional step in the CICD pipeline.                                                                  | bool                                                   | false    | -       |
-| [compile_dataform_repositories](terraform/variables.tf#L28) | Controls whether the dataform scripts found in the repositories will be compiled alongside Terraform resources. If false dataform repositories should be compiled as an additional step in the CICD pipeline.                                                               | bool                                                   | false    | -       |
-| [execute_dataform_repositories](terraform/variables.tf#L33) | Controls whether the dataform scripts found in the repositories will be executed alongside Terraform resources. If false dataform repositories should be executed as an additional step in the CICD pipeline.                                                                 | bool                                                   | false    | -       |
-| [domain](terraform/variables.tf#L38)                       | Your organization or domain name, organization if centralized data management, domain name if one repository for each data domain in a Data mesh environment.                                                                                                             | string                                                 | true     | -       |
-| [project](terraform/variables.tf#L43)            | Project where the the dataform repositories, the Dataplex metadata, and other resources will be created.                                                                                                                                                            | string                                                 | true     | -       |
-| [region](terraform/variables.tf#L48)                       | Region where the datasets from the dataform.json files, the dataform repositories, the Dataplex metadata, and other resources will be created.                                                                                                                           | string                                                 | true     | -       |
-| [dataform_repositories](terraform/variables.tf#L53)        | Dataform repository remote settings required to attach the repository to a remote repository.                                                                                                                                                                        | map(object({...}))                                     | false    | {}      |
-| [dataform_repositories_git_token](terraform/variables.tf#L62) | Git token to access the dataform repositories, it will be stored as a secret in secret manager, and it will be used to connect and read the dataform.json to create the datasets.                                                                                       | string (sensitive)                                     | true     | -       |
-| [create_data_buckets](terraform/variables.tf#L68)          | Controls whether the referenced data buckets will be created. If false referenced buckets should exist.                                                                                                                                                              | bool                                                   | false    | -       |
-| [data_buckets](terraform/variables.tf#L73)                 | Data buckets.                                                                                                                                                                                                                                                           | map(object({...}))                                     | false    | {}      |
-| [create_ddl_buckets](terraform/variables.tf#L82)           | Controls whether the referenced buckets containing DDLs will be created. If false referenced buckets should exist.                                                                                                                                                        | bool                                                   | false    | -       |
-| [run_ddls_in_buckets](terraform/variables.tf#L87)          | Controls whether the .sql files in the referenced DDL buckets should be run.                                                                                                                                                                                          | bool                                                   | false    | -       |
-| [ddl_buckets](terraform/variables.tf#L92)                  | Buckets containing .sql DDL scripts to be executed on Terraform deploy, It can be of flavors: bigquery, TODO                                                                                                                                                               | map(object({...}))                                     | false    | {}      |
+| name                                                             | description                                                                                                                                                                                                                                                           | type                                               | required | default |
+|------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------|----------|---------|
+| [include_metadata_in_tfe_deployment](terraform/variables.tf#L16) | Controls whether metadata is deployed alongside Terraform resources. If false Metadata can be deployed as a next step in a CICD pipeline.                                                                                                                               | bool                                                   | false    | -       |
+| [overwrite_metadata](terraform/variables.tf#L22)                 | Whether to overwrite existing Dataplex (Cortex Datamesh) metadata.                                                                                                                                                                                                    | string                                                 | true     | false    |
+| [create_dataform_datasets](terraform/variables.tf#L29)           | Controls whether the datasets found in the dataform.json files in the repositories will be created alongside Terraform resources. If false datasets should be created otherwise.                                                                                          | bool                                                   | false    | -       |
+| [create_ddl_buckets_datasets](terraform/variables.tf#L35)        | Controls whether the datasets referenced in the GCS DDL buckets will be created alongside Terraform resources. If false datasets should be created otherwise.                                                                                                           | bool                                                   | false    | -       |
+| [create_dataform_repositories](terraform/variables.tf#L41)       | Controls whether the dataform scripts found in the repositories will be created alongside Terraform resources. If false dataform repositories should be created as an additional step in the CICD pipeline.                                                                  | bool                                                   | false    | -       |
+| [compile_dataform_repositories](terraform/variables.tf#L47)      | Controls whether the dataform scripts found in the repositories will be compiled alongside Terraform resources. If false dataform repositories should be compiled as an additional step in the CICD pipeline.                                                               | bool                                                   | false    | -       |
+| [execute_dataform_repositories](terraform/variables.tf#L53)      | Controls whether the dataform scripts found in the repositories will be executed alongside Terraform resources. If false dataform repositories should be executed as an additional step in the CICD pipeline.                                                                 | bool                                                   | false    | -       |
+| [domain](terraform/variables.tf#L59)                             | Your organization or domain name, organization if centralized data management, domain name if one repository for each data domain in a Data mesh environment.                                                                                                             | string                                                 | true     | -       |
+| [project](terraform/variables.tf#L65)                            | Project where the the dataform repositories, the Dataplex metadata, and other resources will be created.                                                                                                                                                            | string                                                 | true     | -       |
+| [region](terraform/variables.tf#L71)                             | Region where the datasets from the dataform.json files, the dataform repositories, the Dataplex metadata, and other resources will be created.                                                                                                                           | string                                                 | true     | -       |
+| [dataform_repositories](terraform/variables.tf#L77)              | Dataform repository remote settings required to attach the repository to a remote repository.                                                                                                                                                                        | map(object({...}))                                     | false    | {}      |
+| [dataform_repositories_git_token](terraform/variables.tf#L87)    | Git token to access the dataform repositories, it will be stored as a secret in secret manager, and it will be used to connect and read the dataform.json to create the datasets.                                                                                       | string (sensitive)                                     | true     | -       |
+| [create_data_buckets](terraform/variables.tf#L94)                | Controls whether the referenced data buckets will be created. If false referenced buckets should exist.                                                                                                                                                              | bool                                                   | false    | -       |
+| [data_buckets](terraform/variables.tf#L100)                      | Data buckets.                                                                                                                                                                                                                                                           | map(object({...}))                                     | false    | {}      |
+| [create_ddl_buckets](terraform/variables.tf#L113)                | Controls whether the referenced buckets containing DDLs will be created. If false referenced buckets should exist.                                                                                                                                                        | bool                                                   | false    | -       |
+| [run_ddls_in_buckets](terraform/variables.tf#L119)               | Controls whether the .sql files in the referenced DDL buckets should be run.                                                                                                                                                                                          | bool                                                   | false    | -       |
+| [ddl_buckets](terraform/variables.tf#L125)                       | Buckets containing .sql DDL scripts to be executed on Terraform deploy, It can be of flavors: bigquery, TODO                                                                                                                                                               | map(object({...}))                                     | false    | {}      |
 <!-- END TFDOC -->
 
 #### Example 
 
 ```hcl
-    project = "your-project-id"
-    region  = "us-central1"
-    domain  = "google"
+    project = "<PROJECT_ID>"
+    region  = "<REGION>"
+    domain  = "<BUSINESS_DOMAIN_NAME>"
     
     include_metadata_in_tfe_deployment = true
     
@@ -97,11 +97,11 @@ Define your terraform variables.  It is recommended creating a `.tfvars` file.
     compile_dataform_repositories   = true
     execute_dataform_repositories   = true
     create_dataform_datasets        = true
-    dataform_repositories_git_token = "your-git-token-to-connect-to-your-git-repos"
+    dataform_repositories_git_token = "<GIT_TOKEN>"
     dataform_repositories           = {
       sample-repo-1 = {
-        remote_repo_url = "https://github.com/../your-git-repo1.git"
-        secret_name     = "any-name"
+        remote_repo_url = "<GIT_HUB_REPOSITORY_URL>"
+        secret_name     = "<SECRET_NAME>"
       },
       ...
     }
@@ -109,11 +109,11 @@ Define your terraform variables.  It is recommended creating a `.tfvars` file.
     create_data_buckets = false
     data_buckets        = {
       data-bucket-1 = {
-        name          = "your-data-bucket"
-        region        = "us-central1"
-        project       = "bucket-project-id"
-        dataplex_lake = "aef-sales-lake"
-        dataplex_zone = "landing-zone"
+        name          = "<DATA_BUCKET_NAME>"
+        region        = "<DATA_BUCKET_REGION>"
+        project       = "<DATA_BUCKET_PROJECT_ID>"
+        dataplex_lake = "<DATA_BUCKET_LAKE_NAME>"
+        dataplex_zone = "<DATA_BUCKET_ZONE_NAME>"
       },
       ...
     }
@@ -122,14 +122,14 @@ Define your terraform variables.  It is recommended creating a `.tfvars` file.
     run_ddls_in_buckets = true
     ddl_buckets         = {
       ddl-bucket-1 = {
-        bucket_name          = "your-ddl-bucket"
-        bucket_region        = "us-central1"
-        bucket_project       = "bucket-project-id"
+        bucket_name          = "<DDL_BUCKET_NAME>"
+        bucket_region        = "<DDL_BUCKET_REGION>"
+        bucket_project       = "<DDL_BUCKET_PROJECT_ID>"
         ddl_flavor           = "bigquery"
-        ddl_project_id       = "ddls-project-id-if-any"
-        ddl_dataset_id       = "ddls-dataset-id-if-any"
-        ddl_data_bucket_name = "ddls-bucket-name-if-any"
-        ddl_connection_name  = "projects/connection-project/locations/us-central1/connections/ddls-connection-name-if-any"
+        ddl_project_id       = "<PROJECT_ID_TO_REPLACE_IN_DDL_FILES>"
+        ddl_dataset_id       = "<DATASET_ID_TO_REPLACE_IN_DDL_FILES>"
+        ddl_data_bucket_name = "<DATA_BUCKET_NAME_TO_REPLACE_IN_DDL_FILES>"
+        ddl_connection_name  = "<CONNECTION_NAME_TO_REPLACE_IN_DDL_FILES>"
       }, 
       ...
     }
