@@ -31,6 +31,7 @@ module "aef-dataform-service-account" {
       "roles/bigquery.admin"
     ]
   }
+  depends_on = [google_project_iam_member.dataform_permissions]
 }
 
 #In order to enable dataform to communicate with a 3P GIT provider, an access token must be generated and stored as a secret on GCP
