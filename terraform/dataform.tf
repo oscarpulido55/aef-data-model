@@ -31,7 +31,6 @@ module "aef-dataform-service-account" {
       "roles/bigquery.admin"
     ]
   }
-  depends_on = [google_project_iam_member.dataform_permissions]
 }
 
 #In order to enable dataform to communicate with a 3P GIT provider, an access token must be generated and stored as a secret on GCP
@@ -61,10 +60,9 @@ module "secrets" {
   }
 }
 
-resource "google_project_iam_member" "dataform_permissions" {
+resource "google_service_account_iam_member" "dataform_permissions" {
   for_each = toset(["roles/iam.serviceAccountTokenCreator", "roles/iam.serviceAccountUser"])
-
-  project = var.project
+  service_account_id = module.aef-dataform-service-account.id
   role    = each.key
   member  = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-dataform.iam.gserviceaccount.com"
   depends_on = [module.dataform_with_external_repos, module.secrets]
@@ -111,7 +109,7 @@ resource "null_resource" "install_dataform_dependencies" {
       pip install google-cloud-asset
     EOF
   }
-  depends_on = [google_project_iam_member.dataform_permissions, module.dataform_with_external_repos, null_resource.run_metadata_deployer]
+  depends_on = [google_service_account_iam_member.dataform_permissions, module.dataform_with_external_repos, null_resource.run_metadata_deployer]
   triggers   = {
     always_run = timestamp()
   }
@@ -129,5 +127,5 @@ data "external" "dataform_deploy" {
     "--execute", var.execute_dataform_repositories,
     "--branch", each.value.branch
   ]
-  depends_on = [null_resource.install_dataform_dependencies]
+  depends_on = [null_resource.install_dataform_dependencies,google_service_account_iam_member.dataform_permissions]
 }
