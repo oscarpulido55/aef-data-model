@@ -111,7 +111,7 @@ def add_lines_to_file(filename, new_lines):
         with open(filename, 'a') as file:
             file.write('\n')
             for line in new_lines:
-                file.write('\n' + line + '\n')
+                file.write(line + '\n')
         print("Lines added successfully!")
         with open(filename, 'r') as file:
             file_content = file.read()
