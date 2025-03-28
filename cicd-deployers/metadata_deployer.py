@@ -94,6 +94,10 @@ def write_json_file(project_id, location, output_filename="cortex_config.json"):
                 "processing": "K9_PROCESSING",
                 "reporting": "K9_REPORTING"
             }
+        },
+        "VertexAI": {
+            "region": "REGION",
+            "processingDataset": "VERTEXDATASET"
         }
     }
     with open(output_filename, "w") as outfile:
